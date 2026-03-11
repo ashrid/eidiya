@@ -1,0 +1,182 @@
+/**
+ * Eidiya - Main Stylesheet
+ * Pico CSS overrides and custom styles
+ */
+
+/* ============================================
+   CSS Custom Properties (Variables)
+   ============================================ */
+
+:root {
+  /* Brand Colors */
+  --pico-primary: #0172ad;
+  --pico-primary-hover: #015887;
+  --pico-primary-focus: rgba(1, 114, 173, 0.25);
+
+  /* Typography */
+  --pico-font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Spacing Scale */
+  --spacing-xs: calc(var(--pico-spacing) * 0.25);
+  --spacing-sm: calc(var(--pico-spacing) * 0.5);
+  --spacing-md: var(--pico-spacing);
+  --spacing-lg: calc(var(--pico-spacing) * 1.5);
+  --spacing-xl: calc(var(--pico-spacing) * 2);
+
+  /* App-specific */
+  --app-max-width: 1200px;
+  --app-header-height: auto;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+
+body {
+  min-height: 100vh;
+}
+
+/* ============================================
+   App Container
+   ============================================ */
+
+.container {
+  max-width: var(--app-max-width);
+  padding: var(--pico-spacing);
+}
+
+/* ============================================
+   Header Styles
+   ============================================ */
+
+header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--pico-muted-border-color);
+}
+
+header h1 {
+  margin-bottom: var(--spacing-xs);
+  font-size: 2rem;
+}
+
+header p {
+  color: var(--pico-muted-color);
+  margin-bottom: 0;
+}
+
+/* ============================================
+   Storage Warning Banner
+   ============================================ */
+
+.storage-warning {
+  background-color: var(--pico-contrast);
+  color: var(--pico-contrast-inverse);
+  padding: var(--spacing-md);
+  border-radius: var(--pico-border-radius);
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+  font-weight: 500;
+}
+
+.storage-warning::before {
+  content: '⚠️ ';
+}
+
+/* ============================================
+   Empty State
+   ============================================ */
+
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--pico-muted-color);
+}
+
+.empty-state h2 {
+  color: var(--pico-color);
+  margin-bottom: var(--spacing-sm);
+}
+
+.empty-state p {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mt-1 {
+  margin-top: var(--spacing-sm);
+}
+
+.mt-2 {
+  margin-top: var(--spacing-md);
+}
+
+.mt-3 {
+  margin-top: var(--spacing-lg);
+}
+
+.mb-1 {
+  margin-bottom: var(--spacing-sm);
+}
+
+.mb-2 {
+  margin-bottom: var(--spacing-md);
+}
+
+.mb-3 {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+
+/* Mobile First (320px+) - Base styles above */
+
+/* Tablet (768px+) */
+@media (min-width: 768px) {
+  header h1 {
+    font-size: 2.5rem;
+  }
+
+  .container {
+    padding: calc(var(--pico-spacing) * 1.5);
+  }
+}
+
+/* Desktop (1024px+) */
+@media (min-width: 1024px) {
+  header h1 {
+    font-size: 3rem;
+  }
+
+  .container {
+    padding: calc(var(--pico-spacing) * 2);
+  }
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+
+@media print {
+  .storage-warning {
+    display: none;
+  }
+}
