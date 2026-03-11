@@ -35,7 +35,12 @@
 5. App displays AED currency formatting correctly throughout (e.g., "AED 1,250.00")
 6. App layout is responsive and usable on mobile devices
 
-**Plans:** TBD
+**Plans:** 3 plans
+
+Plans:
+- [x] 01-PLAN.md - Data Layer & Money Math (Wave 1) - Money class, SafeStorage, unit tests
+- [ ] 02-PLAN.md - Persistence & State Management (Wave 2) - Store, schema, formatters
+- [ ] 03-PLAN.md - UI Foundation & Formatting (Wave 3) - Pico CSS, responsive layout, app shell
 
 ---
 
@@ -121,7 +126,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/3 | Not started | - |
+| 1. Foundation | 1/3 | In Progress | 2026-03-11 |
 | 2. Data Entry | 0/2 | Not started | - |
 | 3. Display & Edit | 0/2 | Not started | - |
 | 4. Distribution | 0/2 | Not started | - |
@@ -140,20 +145,20 @@
 | CONT-05 | Phase 2 | Pending |
 | VAL-01 | Phase 2 | Pending |
 | VAL-02 | Phase 2 | Pending |
-| VAL-03 | Phase 1 | Pending |
+| VAL-03 | Phase 1 | Complete |
 | SUM-01 | Phase 3 | Pending |
 | SUM-02 | Phase 3 | Pending |
 | SUM-03 | Phase 3 | Pending |
 | DIST-01 | Phase 4 | Pending |
 | DIST-02 | Phase 4 | Pending |
 | DIST-03 | Phase 4 | Pending |
-| PERS-01 | Phase 1 | Pending |
-| PERS-02 | Phase 1 | Pending |
-| PERS-03 | Phase 1 | Pending |
+| PERS-01 | Phase 1 | Complete |
+| PERS-02 | Phase 1 | Complete |
+| PERS-03 | Phase 1 | In Progress |
 | PERS-04 | Phase 5 | Pending |
 | PERS-05 | Phase 5 | Pending |
-| UX-01 | Phase 1 | Pending |
-| UX-02 | Phase 1 | Pending |
+| UX-01 | Phase 1 | In Progress |
+| UX-02 | Phase 1 | In Progress |
 | UX-03 | Phase 3 | Pending |
 | UX-04 | Phase 5 | Pending |
 
@@ -174,4 +179,4 @@
 
 ---
 
-*Last updated: 2026-03-11*
+*Last updated: 2026-03-11T18:00:02Z*
