@@ -3,6 +3,8 @@
 **Defined:** 2026-03-11
 **Core Value:** Accurately track who contributed what, how they want it exchanged, and ensure everyone receives their correct notes without miscalculation.
 
+---
+
 ## v1 Requirements
 
 ### Contributors (CONT)
@@ -46,6 +48,8 @@
 - [ ] **UX-03**: App provides clear visual feedback for all actions
 - [ ] **UX-04**: App supports both light and dark modes
 
+---
+
 ## v2 Requirements
 
 ### Templates (TEMP)
@@ -59,6 +63,8 @@
 - **ENH-02**: Undo last action
 - **ENH-03**: Multiple Eid sessions with history
 
+---
+
 ## Out of Scope
 
 | Feature | Reason |
@@ -71,17 +77,19 @@
 | Receipt photo upload | Privacy concerns, unnecessary for family trust |
 | Real-time collaboration | Single organizer model, no conflict resolution needed |
 
+---
+
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CONT-01 | Phase 1 | Pending |
-| CONT-02 | Phase 1 | Pending |
-| CONT-03 | Phase 2 | Pending |
-| CONT-04 | Phase 2 | Pending |
-| CONT-05 | Phase 1 | Pending |
-| VAL-01 | Phase 1 | Pending |
-| VAL-02 | Phase 1 | Pending |
+| CONT-01 | Phase 2 | Pending |
+| CONT-02 | Phase 2 | Pending |
+| CONT-03 | Phase 3 | Pending |
+| CONT-04 | Phase 3 | Pending |
+| CONT-05 | Phase 2 | Pending |
+| VAL-01 | Phase 2 | Pending |
+| VAL-02 | Phase 2 | Pending |
 | VAL-03 | Phase 1 | Pending |
 | SUM-01 | Phase 3 | Pending |
 | SUM-02 | Phase 3 | Pending |
@@ -96,14 +104,15 @@
 | PERS-05 | Phase 5 | Pending |
 | UX-01 | Phase 1 | Pending |
 | UX-02 | Phase 1 | Pending |
-| UX-03 | Phase 1 | Pending |
+| UX-03 | Phase 3 | Pending |
 | UX-04 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 22 total
 - Mapped to phases: 22
-- Unmapped: 0 ✓
+- Unmapped: 0
 
 ---
+
 *Requirements defined: 2026-03-11*
-*Last updated: 2026-03-11 after initial definition*
+*Last updated: 2026-03-11 after roadmap creation*
