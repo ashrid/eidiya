@@ -9,7 +9,7 @@
 
 ## Phases
 
-- [ ] **Phase 1: Foundation** - Data layer, persistence, and calculation engine
+- [x] **Phase 1: Foundation** - Data layer, persistence, and calculation engine (completed 2026-03-11)
 - [ ] **Phase 2: Data Entry** - Add contributors with denomination breakdown and validation
 - [ ] **Phase 3: Display & Edit** - View contributors, totals, and manage entries
 - [ ] **Phase 4: Distribution** - Track receipts and generate printable lists
@@ -35,7 +35,7 @@
 5. App displays AED currency formatting correctly throughout (e.g., "AED 1,250.00")
 6. App layout is responsive and usable on mobile devices
 
-**Plans:** 3 plans
+**Plans:** 3/3 plans complete
 
 Plans:
 - [x] 01-PLAN.md - Data Layer & Money Math (Wave 1) - Money class, SafeStorage, unit tests
@@ -126,7 +126,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 2/3 | In Progress | 2026-03-11 |
+| 1. Foundation | 2/3 | Complete    | 2026-03-11 |
 | 2. Data Entry | 0/2 | Not started | - |
 | 3. Display & Edit | 0/2 | Not started | - |
 | 4. Distribution | 0/2 | Not started | - |
