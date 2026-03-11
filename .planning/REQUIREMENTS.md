@@ -43,8 +43,8 @@
 
 ### UI/UX (UX)
 
-- [ ] **UX-01**: App is responsive and works on mobile devices
-- [ ] **UX-02**: App uses AED currency formatting throughout
+- [x] **UX-01**: App is responsive and works on mobile devices
+- [x] **UX-02**: App uses AED currency formatting throughout
 - [ ] **UX-03**: App provides clear visual feedback for all actions
 - [ ] **UX-04**: App supports both light and dark modes
 
@@ -102,8 +102,8 @@
 | PERS-03 | Phase 1 | Complete |
 | PERS-04 | Phase 5 | Pending |
 | PERS-05 | Phase 5 | Pending |
-| UX-01 | Phase 1 | Pending |
-| UX-02 | Phase 1 | Pending |
+| UX-01 | Phase 1 | Complete |
+| UX-02 | Phase 1 | Complete |
 | UX-03 | Phase 3 | Pending |
 | UX-04 | Phase 5 | Pending |
 
