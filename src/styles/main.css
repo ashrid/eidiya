@@ -655,6 +655,174 @@ fieldset.error legend {
 }
 
 /* ============================================
+   Received Section (in ContributorCard)
+   ============================================ */
+
+.received-section {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--pico-muted-border-color);
+}
+
+.received-section input[type="checkbox"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+  cursor: pointer;
+}
+
+.received-section label {
+  margin: 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--pico-color);
+  user-select: none;
+}
+
+/* Received card state */
+.contributor-card.received {
+  opacity: 0.7;
+}
+
+.contributor-card.received .contributor-name {
+  text-decoration: line-through;
+  color: var(--pico-muted-color);
+}
+
+/* ============================================
+   Distribution Panel Styles
+   ============================================ */
+
+.distribution-panel {
+  background-color: var(--pico-card-background-color);
+  border-radius: var(--pico-border-radius);
+  padding: var(--spacing-lg);
+  box-shadow: var(--pico-card-box-shadow);
+  margin-top: var(--spacing-lg);
+}
+
+.distribution-panel header {
+  text-align: left;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--pico-muted-border-color);
+}
+
+.distribution-panel header h2 {
+  margin-bottom: 0;
+  font-size: 1.25rem;
+}
+
+/* Progress section */
+.progress-section {
+  text-align: center;
+}
+
+.progress-stats {
+  margin-bottom: var(--spacing-lg);
+}
+
+.progress-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+  color: var(--pico-color);
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 0.75rem;
+  background-color: var(--pico-muted-border-color);
+  border-radius: var(--pico-border-radius);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--pico-primary);
+  border-radius: var(--pico-border-radius);
+  transition: width 0.3s ease;
+}
+
+/* Empty message */
+.empty-message {
+  color: var(--pico-muted-color);
+  font-style: italic;
+}
+
+/* Remaining section */
+.remaining-section {
+  margin-bottom: var(--spacing-lg);
+}
+
+.remaining-section h3 {
+  font-size: 1rem;
+  margin-bottom: var(--spacing-sm);
+  text-align: left;
+}
+
+/* Remaining notes table */
+.remaining-notes-table {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.remaining-notes-table th,
+.remaining-notes-table td {
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.remaining-notes-table th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pico-muted-color);
+  border-bottom: 1px solid var(--pico-muted-border-color);
+}
+
+.remaining-notes-table td {
+  font-size: 0.9rem;
+}
+
+.remaining-notes-table td.numeric,
+.remaining-notes-table th.numeric {
+  text-align: right;
+}
+
+.remaining-notes-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Print button */
+.print-button {
+  width: 100%;
+  margin-top: var(--spacing-md);
+}
+
+/* Flash animation for live updates */
+.distribution-panel.updated {
+  animation: flash-update 0.5s ease-out;
+}
+
+/* ============================================
+   Sidebar Container (for Summary + Distribution panels)
+   ============================================ */
+
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.sidebar-container .summary-panel,
+.sidebar-container .distribution-panel {
+  margin-top: 0;
+}
+
+/* ============================================
    Print Styles
    ============================================ */
 
@@ -663,10 +831,15 @@ fieldset.error legend {
     display: none;
   }
 
-  .summary-panel {
+  .summary-panel,
+  .distribution-panel {
     break-inside: avoid;
     box-shadow: none;
     border: 1px solid var(--pico-muted-border-color);
+  }
+
+  .print-button {
+    display: none;
   }
 }
 

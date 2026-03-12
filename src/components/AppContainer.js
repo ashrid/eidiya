@@ -6,6 +6,7 @@
 import { formatAED } from '@modules/money/formatters.js';
 import { ContributorForm } from './ContributorForm.js';
 import { SummaryPanel } from './SummaryPanel.js';
+import { DistributionPanel } from './DistributionPanel.js';
 import { ContributorCard } from './ContributorCard.js';
 import { DeleteConfirmation } from './DeleteConfirmation.js';
 
@@ -22,6 +23,7 @@ export class AppContainer {
     this._onAddContributor = options.onAddContributor || (() => {});
     this._form = null;
     this._summaryPanel = null;
+    this._distributionPanel = null;
     this._deleteConfirmation = null;
     this._editingContributorId = null;
     this._contributorCards = new Map();
@@ -39,6 +41,10 @@ export class AppContainer {
     if (this._summaryPanel) {
       this._summaryPanel.destroy();
       this._summaryPanel = null;
+    }
+    if (this._distributionPanel) {
+      this._distributionPanel.destroy();
+      this._distributionPanel = null;
     }
     // Clean up old contributor cards
     for (const card of this._contributorCards.values()) {
@@ -85,19 +91,30 @@ export class AppContainer {
       mainContent.appendChild(this._renderContributorsList(state));
     }
 
+    // Create sidebar container for panels
+    const sidebarContainer = document.createElement('div');
+    sidebarContainer.className = 'sidebar-container';
+
     // Create summary panel (sidebar on desktop, top card on mobile)
     this._summaryPanel = new SummaryPanel(this._store);
     const summaryElement = this._summaryPanel.render();
+    sidebarContainer.appendChild(summaryElement);
 
-    // Assemble layout: SummaryPanel first in DOM for mobile (top card),
+    // Create distribution panel (below summary)
+    this._distributionPanel = new DistributionPanel(this._store);
+    const distributionElement = this._distributionPanel.render();
+    sidebarContainer.appendChild(distributionElement);
+
+    // Assemble layout: sidebar first in DOM for mobile (top cards),
     // but will be repositioned via CSS on desktop
-    layoutWrapper.appendChild(summaryElement);
+    layoutWrapper.appendChild(sidebarContainer);
     layoutWrapper.appendChild(mainContent);
 
     this._container.appendChild(layoutWrapper);
 
-    // Subscribe summary panel to store updates
+    // Subscribe panels to store updates
     this._summaryPanel.subscribe();
+    this._distributionPanel.subscribe();
 
     // Initialize delete confirmation modal
     this._initDeleteConfirmation();
