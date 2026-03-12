@@ -175,3 +175,111 @@ describe('validateDenominationSum', () => {
     expect(result.error).toContain('20 AED'); // difference
   });
 });
+
+describe('validateContributorForm', () => {
+  const validData = {
+    name: 'John Doe',
+    date: '2024-03-15',
+    totalAmount: '100.00',
+    breakdown: {
+      five: 0,
+      ten: 0,
+      twenty: 0,
+      fifty: 2, // 100 AED
+      hundred: 0,
+      twoHundred: 0,
+      fiveHundred: 0,
+      thousand: 0,
+    },
+  };
+
+  it('should return valid=true for complete valid data', () => {
+    const result = validateContributorForm(validData);
+    expect(result.valid).toBe(true);
+    expect(result.errors.size).toBe(0);
+  });
+
+  it('should return error for empty name', () => {
+    const result = validateContributorForm({ ...validData, name: '' });
+    expect(result.valid).toBe(false);
+    expect(result.errors.get('name')).toBe('Name is required');
+  });
+
+  it('should return error for whitespace-only name', () => {
+    const result = validateContributorForm({ ...validData, name: '   ' });
+    expect(result.valid).toBe(false);
+    expect(result.errors.get('name')).toBe('Name is required');
+  });
+
+  it('should return error for missing date', () => {
+    const result = validateContributorForm({ ...validData, date: '' });
+    expect(result.valid).toBe(false);
+    expect(result.errors.get('date')).toBe('Date is required');
+  });
+
+  it('should return error for invalid date', () => {
+    const result = validateContributorForm({ ...validData, date: 'invalid' });
+    expect(result.valid).toBe(false);
+    expect(result.errors.get('date')).toBe('Invalid date');
+  });
+
+  it('should return error for missing totalAmount', () => {
+    const result = validateContributorForm({ ...validData, totalAmount: '' });
+    expect(result.valid).toBe(false);
+    expect(result.errors.get('totalAmount')).toBe('Total amount is required');
+  });
+
+  it('should return error for invalid totalAmount', () => {
+    const result = validateContributorForm({ ...validData, totalAmount: 'invalid' });
+    expect(result.valid).toBe(false);
+    expect(result.errors.get('totalAmount')).toBe('Total amount must be a positive number');
+  });
+
+  it('should return error for zero totalAmount', () => {
+    const result = validateContributorForm({ ...validData, totalAmount: '0' });
+    expect(result.valid).toBe(false);
+    expect(result.errors.get('totalAmount')).toBe('Total amount must be a positive number');
+  });
+
+  it('should return error for negative totalAmount', () => {
+    const result = validateContributorForm({ ...validData, totalAmount: '-50' });
+    expect(result.valid).toBe(false);
+    expect(result.errors.get('totalAmount')).toBe('Total amount must be a positive number');
+  });
+
+  it('should return multiple errors for multiple invalid fields', () => {
+    const result = validateContributorForm({
+      name: '',
+      date: 'invalid',
+      totalAmount: '-10',
+      breakdown: {},
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.size).toBe(3);
+    expect(result.errors.has('name')).toBe(true);
+    expect(result.errors.has('date')).toBe(true);
+    expect(result.errors.has('totalAmount')).toBe(true);
+  });
+
+  it('should use validateDenominationSum for breakdown validation', () => {
+    const result = validateContributorForm({
+      ...validData,
+      breakdown: { fifty: 1 }, // 50 AED, but total is 100 AED
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.has('breakdown')).toBe(true);
+    expect(result.errors.get('breakdown')).toContain('50 AED');
+    expect(result.errors.get('breakdown')).toContain('100 AED');
+  });
+
+  it('should skip breakdown validation if totalAmount is invalid', () => {
+    const result = validateContributorForm({
+      ...validData,
+      totalAmount: 'invalid',
+      breakdown: { fifty: 1 },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.has('totalAmount')).toBe(true);
+    expect(result.errors.has('breakdown')).toBe(false);
+  });
+});
