@@ -21,6 +21,7 @@
  * @property {string} name - Contributor name
  * @property {string} date - ISO date string
  * @property {number} amountInFils - Amount in integer fils
+ * @property {boolean} [received] - Whether contributor has received their notes
  * @property {DenominationBreakdown} breakdown - Note breakdown
  */
 
@@ -33,7 +34,7 @@
  */
 
 /** Current schema version for migrations */
-export const CURRENT_SCHEMA_VERSION = '1.0.0';
+export const CURRENT_SCHEMA_VERSION = '1.1.0';
 
 /** Valid denomination keys */
 const DENOMINATION_KEYS = ['five', 'ten', 'twenty', 'fifty', 'hundred', 'twoHundred', 'fiveHundred', 'thousand'];
@@ -113,6 +114,11 @@ function validateContributor(contributor, index) {
     return { valid: false, error: `contributor[${index}].${breakdownValidation.error}` };
   }
 
+  // Validate received field if present (must be boolean)
+  if ('received' in contributor && typeof contributor.received !== 'boolean') {
+    return { valid: false, error: `contributor[${index}].received must be a boolean` };
+  }
+
   return { valid: true };
 }
 
@@ -148,9 +154,16 @@ export function validateState(data) {
 export function migrateState(data) {
   const timestamp = getTimestamp();
 
+  const contributors = Array.isArray(data.contributors)
+    ? data.contributors.map(c => ({
+        ...c,
+        received: c.received ?? false,
+      }))
+    : [];
+
   return {
     version: data.version || CURRENT_SCHEMA_VERSION,
-    contributors: Array.isArray(data.contributors) ? data.contributors : [],
+    contributors,
     createdAt: data.createdAt || timestamp,
     updatedAt: timestamp,
   };

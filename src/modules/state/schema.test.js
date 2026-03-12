@@ -12,8 +12,8 @@ import {
 
 describe('schema', () => {
   describe('CURRENT_SCHEMA_VERSION', () => {
-    it('should be "1.0.0"', () => {
-      expect(CURRENT_SCHEMA_VERSION).toBe('1.0.0');
+    it('should be "1.1.0"', () => {
+      expect(CURRENT_SCHEMA_VERSION).toBe('1.1.0');
     });
   });
 
@@ -241,6 +241,59 @@ describe('schema', () => {
       });
       expect(result.valid).toBe(true);
     });
+
+    it('should accept contributor with received field', () => {
+      const result = validateState({
+        version: '1.1.0',
+        contributors: [{
+          id: 'abc123',
+          name: 'Ahmed',
+          date: '2024-01-01',
+          amountInFils: 5000,
+          received: true,
+          breakdown: {
+            five: 0,
+            ten: 0,
+            twenty: 0,
+            fifty: 0,
+            hundred: 0,
+            twoHundred: 0,
+            fiveHundred: 0,
+            thousand: 5,
+          },
+        }],
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-01T00:00:00Z',
+      });
+      expect(result.valid).toBe(true);
+    });
+
+    it('should reject contributor with non-boolean received field', () => {
+      const result = validateState({
+        version: '1.1.0',
+        contributors: [{
+          id: 'abc123',
+          name: 'Ahmed',
+          date: '2024-01-01',
+          amountInFils: 5000,
+          received: 'yes',
+          breakdown: {
+            five: 0,
+            ten: 0,
+            twenty: 0,
+            fifty: 0,
+            hundred: 0,
+            twoHundred: 0,
+            fiveHundred: 0,
+            thousand: 5,
+          },
+        }],
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-01T00:00:00Z',
+      });
+      expect(result.valid).toBe(false);
+      expect(result.error).toContain('received');
+    });
   });
 
   describe('migrateState', () => {
@@ -292,6 +345,32 @@ describe('schema', () => {
       const data = { version: '1.0.0', contributors: [] };
       const migrated = migrateState(data);
       expect(migrated).not.toBe(data);
+    });
+
+    it('should default received to false for existing contributors without received field', () => {
+      const data = {
+        version: '1.0.0',
+        contributors: [
+          { id: '1', name: 'Alice', date: '2024-01-01', amountInFils: 10000, breakdown: { thousand: 10 } },
+          { id: '2', name: 'Bob', date: '2024-01-02', amountInFils: 5000, breakdown: { fiveHundred: 10 } },
+        ],
+      };
+      const migrated = migrateState(data);
+      expect(migrated.contributors[0].received).toBe(false);
+      expect(migrated.contributors[1].received).toBe(false);
+    });
+
+    it('should preserve existing received values during migration', () => {
+      const data = {
+        version: '1.0.0',
+        contributors: [
+          { id: '1', name: 'Alice', date: '2024-01-01', amountInFils: 10000, received: true, breakdown: { thousand: 10 } },
+          { id: '2', name: 'Bob', date: '2024-01-02', amountInFils: 5000, received: false, breakdown: { fiveHundred: 10 } },
+        ],
+      };
+      const migrated = migrateState(data);
+      expect(migrated.contributors[0].received).toBe(true);
+      expect(migrated.contributors[1].received).toBe(false);
     });
   });
 });
