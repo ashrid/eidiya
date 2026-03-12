@@ -277,7 +277,8 @@ export class ContributorForm {
     input.value = this._values.breakdown[key] || 0;
     group.appendChild(input);
 
-    this._errorElements.set(key, { input, group });
+    // Denomination fields don't show inline errors, but we need the entry for consistency
+    this._errorElements.set(key, { input, error: null });
 
     return group;
   }
@@ -376,6 +377,8 @@ export class ContributorForm {
     }
 
     const { input, error } = elements;
+    if (!error) return; // Denomination fields don't have error elements
+
     input.removeAttribute('aria-invalid');
     input.removeAttribute('aria-describedby');
     error.textContent = '';

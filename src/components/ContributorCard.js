@@ -291,15 +291,16 @@ export class ContributorCard {
     // Update local contributor data
     this._contributor = { ...this._contributor, ...updates };
 
-    // Dispatch to store
+    // Show success feedback BEFORE dispatching to store
+    // (Store notification triggers re-render which destroys this card)
+    this._showStatus('Saved', 'success');
+
+    // Dispatch to store (triggers re-render, but status is already showing)
     this._onUpdate(this._contributor.id, updates);
 
     // Exit edit mode and re-render field
     this._exitEditMode();
     this._renderField(field);
-
-    // Show success feedback
-    this._showStatus('Saved', 'success');
   }
 
   /**
