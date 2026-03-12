@@ -99,6 +99,13 @@ Each task was committed atomically:
    - Added null guards for destroyed card elements
    - Fixed form collapsed state persistence across re-renders
 
+**Enhancement Commits:**
+
+7. **Enhanced breakdown editing with denomination grid** - `994bd62` (feat)
+   - Replaced single-line text edit with full denomination input grid
+   - Added real-time remaining indicator (balanced/remaining/excess)
+   - Added explicit Save/Cancel buttons for breakdown editing
+
 ## Files Created/Modified
 
 - `src/modules/state/Store.js` - Added updateContributor and deleteContributor methods
@@ -133,6 +140,10 @@ None - plan executed exactly as written.
 4. **Bug: Status badge not showing on edit** (post-implementation): `_showStatus` was called after store dispatch, but store notification triggers re-render which destroys the card. Fixed by showing status BEFORE dispatching to store.
 5. **Bug: "can't access property 'classList', this._element is null"** (post-implementation): Store re-render destroys the card element while `_saveEdit` is still executing. Fixed by adding null guards in `_exitEditMode` and `_renderField`.
 6. **Bug: Form toggle not working** (post-implementation): AppContainer created new form on each render with `initiallyCollapsed: hasContributors`, ignoring user's toggle choice. Fixed by tracking `_isFormCollapsed` state across re-renders.
+
+**Post-Implementation Enhancements (based on user feedback):**
+
+7. **UX: Enhanced breakdown editing** - Replaced single-line text breakdown edit with full denomination input grid. Added real-time remaining indicator showing allocation status (balanced/remaining/excess) and explicit Save/Cancel buttons. Prevents confusion when amount and breakdown don't match.
 
 ## Next Phase Readiness
 
