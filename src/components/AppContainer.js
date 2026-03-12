@@ -9,6 +9,7 @@ import { SummaryPanel } from './SummaryPanel.js';
 import { DistributionPanel } from './DistributionPanel.js';
 import { ContributorCard } from './ContributorCard.js';
 import { DeleteConfirmation } from './DeleteConfirmation.js';
+import { DistributionPrintView } from './DistributionPrintView.js';
 
 export class AppContainer {
   /**
@@ -28,6 +29,13 @@ export class AppContainer {
     this._editingContributorId = null;
     this._contributorCards = new Map();
     this._isFormCollapsed = false; // Track form collapsed state across re-renders
+    this._printView = null;
+
+    // Bind event handlers
+    this._handlePrintRequest = this._handlePrintRequest.bind(this);
+
+    // Listen for print distribution event
+    window.addEventListener('eidiya:print-distribution', this._handlePrintRequest);
   }
 
   /**
@@ -284,6 +292,69 @@ export class AppContainer {
     container.appendChild(totalSection);
 
     return container;
+  }
+
+  /**
+   * Handle print request from DistributionPanel
+   * Creates print view, appends to body, triggers print, then cleans up
+   * @private
+   */
+  _handlePrintRequest() {
+    const state = this._store.getState();
+
+    // Don't print if no contributors
+    if (state.contributors.length === 0) {
+      return;
+    }
+
+    // Clean up any existing print view
+    if (this._printView) {
+      this._printView.destroy();
+      this._printView = null;
+    }
+
+    // Create print view with current contributors
+    this._printView = new DistributionPrintView(state.contributors);
+    const printElement = this._printView.render();
+
+    // Append to body
+    document.body.appendChild(printElement);
+
+    // Trigger print dialog
+    window.print();
+
+    // Clean up after print dialog closes (small delay to allow print dialog to appear)
+    setTimeout(() => {
+      if (this._printView) {
+        this._printView.destroy();
+        this._printView = null;
+      }
+    }, 100);
+  }
+
+  /**
+   * Clean up event listeners and components
+   */
+  destroy() {
+    window.removeEventListener('eidiya:print-distribution', this._handlePrintRequest);
+
+    if (this._printView) {
+      this._printView.destroy();
+      this._printView = null;
+    }
+
+    if (this._summaryPanel) {
+      this._summaryPanel.destroy();
+    }
+
+    if (this._distributionPanel) {
+      this._distributionPanel.destroy();
+    }
+
+    for (const card of this._contributorCards.values()) {
+      card.destroy();
+    }
+    this._contributorCards.clear();
   }
 
   /**
