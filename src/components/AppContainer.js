@@ -4,15 +4,20 @@
  */
 
 import { formatAED } from '@modules/money/formatters.js';
+import { ContributorForm } from './ContributorForm.js';
 
 export class AppContainer {
   /**
    * @param {HTMLElement} containerElement - DOM element to render into
    * @param {Object} store - Store instance for state access
+   * @param {Object} options - Optional configuration
+   * @param {Function} options.onAddContributor - Callback when contributor is added
    */
-  constructor(containerElement, store) {
+  constructor(containerElement, store, options = {}) {
     this._container = containerElement;
     this._store = store;
+    this._onAddContributor = options.onAddContributor || (() => {});
+    this._form = null;
   }
 
   /**
@@ -28,6 +33,21 @@ export class AppContainer {
     if (this._store._storage && this._store._storage.isUsingFallback()) {
       this._container.appendChild(this._renderStorageWarning());
     }
+
+    // Render form (always at top)
+    const hasContributors = state.contributors.length > 0;
+    this._form = new ContributorForm(
+      (data) => this._handleFormSubmit(data),
+      {
+        initiallyCollapsed: hasContributors,
+        hasContributors: hasContributors,
+        onToggle: (collapsed) => {
+          // Re-render to show/hide form
+          this.render();
+        }
+      }
+    );
+    this._container.appendChild(this._form.render());
 
     // Render main content based on state
     if (state.contributors.length === 0) {
@@ -182,5 +202,23 @@ export class AppContainer {
     article.appendChild(breakdownDiv);
 
     return article;
+  }
+
+  /**
+   * Handle form submission and add contributor to store
+   * @param {Object} contributorData - Data from the form
+   * @private
+   */
+  _handleFormSubmit(contributorData) {
+    // Dispatch to store
+    this._store.addContributor({
+      name: contributorData.name,
+      date: contributorData.date,
+      amountInFils: contributorData.amountInFils,
+      breakdown: contributorData.breakdown
+    });
+
+    // Notify parent (for any additional handling)
+    this._onAddContributor(contributorData);
   }
 }
