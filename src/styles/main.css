@@ -262,6 +262,30 @@ fieldset.error legend {
 }
 
 /* ============================================
+   Form Toggle Styles
+   ============================================ */
+
+.form-section {
+  margin-bottom: var(--pico-spacing);
+}
+
+.form-toggle {
+  width: 100%;
+  margin-bottom: var(--pico-spacing);
+}
+
+.form-toggle.outline {
+  --pico-background-color: transparent;
+  --pico-border-color: var(--pico-primary);
+  --pico-color: var(--pico-primary);
+}
+
+.form-toggle.outline:hover {
+  --pico-background-color: var(--pico-primary);
+  --pico-color: var(--pico-primary-inverse);
+}
+
+/* ============================================
    Print Styles
    ============================================ */
 
