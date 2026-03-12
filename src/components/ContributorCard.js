@@ -100,9 +100,36 @@ export class ContributorCard {
     const statusContainer = document.createElement('div');
     statusContainer.className = 'status-container';
 
+    // Received section (always visible)
+    const receivedSection = document.createElement('div');
+    receivedSection.className = 'received-section';
+    receivedSection.dataset.field = 'received';
+
+    const receivedCheckbox = document.createElement('input');
+    receivedCheckbox.type = 'checkbox';
+    receivedCheckbox.id = `received-${this._contributor.id}`;
+    receivedCheckbox.checked = this._contributor.received || false;
+    receivedCheckbox.setAttribute('aria-label', `Mark ${this._contributor.name} as received`);
+    receivedCheckbox.addEventListener('change', (e) => {
+      this._onUpdate(this._contributor.id, { received: e.target.checked });
+    });
+
+    const receivedLabel = document.createElement('label');
+    receivedLabel.htmlFor = `received-${this._contributor.id}`;
+    receivedLabel.textContent = 'Received';
+
+    receivedSection.appendChild(receivedCheckbox);
+    receivedSection.appendChild(receivedLabel);
+
+    // Add 'received' class to card if contributor is marked as received
+    if (this._contributor.received) {
+      this._element.classList.add('received');
+    }
+
     this._element.appendChild(header);
     this._element.appendChild(amountSection);
     this._element.appendChild(breakdownSection);
+    this._element.appendChild(receivedSection);
     this._element.appendChild(statusContainer);
 
     return this._element;
