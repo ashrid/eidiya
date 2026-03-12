@@ -22,8 +22,12 @@ export class App {
    * Creates AppContainer, subscribes to state changes, performs initial render
    */
   init() {
-    // Create the UI container
-    this._container = new AppContainer(this._root, this._store);
+    // Create the UI container with callback
+    this._container = new AppContainer(this._root, this._store, {
+      onAddContributor: (data) => {
+        console.log('Contributor added:', data.name);
+      }
+    });
 
     // Subscribe to state changes for re-rendering
     this._unsubscribe = this._store.subscribe((newState, prevState) => {
