@@ -172,6 +172,82 @@ header p {
 }
 
 /* ============================================
+   Form Styles
+   ============================================ */
+
+.form-card {
+  margin-bottom: var(--pico-spacing);
+}
+
+.form-card header {
+  text-align: left;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--pico-muted-border-color);
+}
+
+.form-card header h2 {
+  margin-bottom: 0;
+  font-size: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+/* Denomination grid - 2 columns mobile, 4 columns desktop */
+.denomination-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--pico-spacing);
+}
+
+@media (min-width: 768px) {
+  .denomination-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.denomination-field {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--pico-spacing) * 0.25);
+}
+
+.denomination-field label {
+  font-size: 0.875rem;
+  color: var(--pico-muted-color);
+  margin-bottom: 0;
+}
+
+.denomination-field input {
+  margin-bottom: 0;
+}
+
+/* Error styling */
+.error-message {
+  color: var(--pico-color-red-500);
+  font-size: 0.875rem;
+  margin-top: calc(var(--pico-spacing) * 0.25);
+}
+
+input[aria-invalid="true"] {
+  border-color: var(--pico-color-red-500);
+}
+
+input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 var(--pico-outline-width) var(--pico-color-red-500);
+}
+
+fieldset.error {
+  border-color: var(--pico-color-red-500);
+}
+
+fieldset.error legend {
+  color: var(--pico-color-red-500);
+}
+
+/* ============================================
    Print Styles
    ============================================ */
 
