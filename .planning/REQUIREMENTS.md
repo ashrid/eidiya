@@ -11,8 +11,8 @@
 
 - [ ] **CONT-01**: User can add a contributor with name, contribution date, and total amount
 - [ ] **CONT-02**: User can specify denomination breakdown per contributor (5, 10, 20, 50, 100, 200, 500, 1000 AED notes)
-- [ ] **CONT-03**: User can edit existing contributor details
-- [ ] **CONT-04**: User can delete a contributor
+- [x] **CONT-03**: User can edit existing contributor details
+- [x] **CONT-04**: User can delete a contributor
 - [ ] **CONT-05**: User can view all contributors in a list with their details
 
 ### Validation (VAL)
@@ -45,7 +45,7 @@
 
 - [x] **UX-01**: App is responsive and works on mobile devices
 - [x] **UX-02**: App uses AED currency formatting throughout
-- [ ] **UX-03**: App provides clear visual feedback for all actions
+- [x] **UX-03**: App provides clear visual feedback for all actions
 - [ ] **UX-04**: App supports both light and dark modes
 
 ---
@@ -85,8 +85,8 @@
 |-------------|-------|--------|
 | CONT-01 | Phase 2 | Pending |
 | CONT-02 | Phase 2 | Pending |
-| CONT-03 | Phase 3 | Pending |
-| CONT-04 | Phase 3 | Pending |
+| CONT-03 | Phase 3 | Complete |
+| CONT-04 | Phase 3 | Complete |
 | CONT-05 | Phase 2 | Pending |
 | VAL-01 | Phase 2 | Pending |
 | VAL-02 | Phase 2 | Pending |
@@ -104,7 +104,7 @@
 | PERS-05 | Phase 5 | Pending |
 | UX-01 | Phase 1 | Complete |
 | UX-02 | Phase 1 | Complete |
-| UX-03 | Phase 3 | Pending |
+| UX-03 | Phase 3 | Complete |
 | UX-04 | Phase 5 | Pending |
 
 **Coverage:**
