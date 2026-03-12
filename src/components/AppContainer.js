@@ -7,6 +7,7 @@ import { formatAED } from '@modules/money/formatters.js';
 import { ContributorForm } from './ContributorForm.js';
 import { SummaryPanel } from './SummaryPanel.js';
 import { DistributionPanel } from './DistributionPanel.js';
+import { DataManager } from './DataManager.js';
 import { ContributorCard } from './ContributorCard.js';
 import { DeleteConfirmation } from './DeleteConfirmation.js';
 import { DistributionPrintView } from './DistributionPrintView.js';
@@ -25,6 +26,7 @@ export class AppContainer {
     this._form = null;
     this._summaryPanel = null;
     this._distributionPanel = null;
+    this._dataManager = null;
     this._deleteConfirmation = null;
     this._editingContributorId = null;
     this._contributorCards = new Map();
@@ -53,6 +55,10 @@ export class AppContainer {
     if (this._distributionPanel) {
       this._distributionPanel.destroy();
       this._distributionPanel = null;
+    }
+    if (this._dataManager) {
+      this._dataManager.destroy();
+      this._dataManager = null;
     }
     // Clean up old contributor cards
     for (const card of this._contributorCards.values()) {
@@ -112,6 +118,11 @@ export class AppContainer {
     this._distributionPanel = new DistributionPanel(this._store);
     const distributionElement = this._distributionPanel.render();
     sidebarContainer.appendChild(distributionElement);
+
+    // Create data manager panel (below distribution)
+    this._dataManager = new DataManager(this._store);
+    const dataManagerElement = this._dataManager.render();
+    sidebarContainer.appendChild(dataManagerElement);
 
     // Assemble layout: sidebar first in DOM for mobile (top cards),
     // but will be repositioned via CSS on desktop
@@ -349,6 +360,10 @@ export class AppContainer {
 
     if (this._distributionPanel) {
       this._distributionPanel.destroy();
+    }
+
+    if (this._dataManager) {
+      this._dataManager.destroy();
     }
 
     for (const card of this._contributorCards.values()) {
