@@ -5,6 +5,7 @@
 
 import { formatAED } from '@modules/money/formatters.js';
 import { ContributorForm } from './ContributorForm.js';
+import { SummaryPanel } from './SummaryPanel.js';
 
 export class AppContainer {
   /**
@@ -18,6 +19,7 @@ export class AppContainer {
     this._store = store;
     this._onAddContributor = options.onAddContributor || (() => {});
     this._form = null;
+    this._summaryPanel = null;
   }
 
   /**
@@ -26,15 +28,27 @@ export class AppContainer {
   render() {
     const state = this._store.getState();
 
-    // Clear current content
+    // Clear current content and clean up old summary panel
     this._container.innerHTML = '';
+    if (this._summaryPanel) {
+      this._summaryPanel.destroy();
+      this._summaryPanel = null;
+    }
 
     // Render storage warning if using fallback
     if (this._store._storage && this._store._storage.isUsingFallback()) {
       this._container.appendChild(this._renderStorageWarning());
     }
 
-    // Render form (always at top)
+    // Create responsive layout wrapper
+    const layoutWrapper = document.createElement('div');
+    layoutWrapper.className = 'app-layout';
+
+    // Create main content area (form + contributors)
+    const mainContent = document.createElement('div');
+    mainContent.className = 'main-content';
+
+    // Render form (always at top of main content)
     const hasContributors = state.contributors.length > 0;
     this._form = new ContributorForm(
       (data) => this._handleFormSubmit(data),
@@ -47,14 +61,28 @@ export class AppContainer {
         }
       }
     );
-    this._container.appendChild(this._form.render());
+    mainContent.appendChild(this._form.render());
 
     // Render main content based on state
     if (state.contributors.length === 0) {
-      this._container.appendChild(this._renderEmptyState());
+      mainContent.appendChild(this._renderEmptyState());
     } else {
-      this._container.appendChild(this._renderContributorsList(state));
+      mainContent.appendChild(this._renderContributorsList(state));
     }
+
+    // Create summary panel (sidebar on desktop, top card on mobile)
+    this._summaryPanel = new SummaryPanel(this._store);
+    const summaryElement = this._summaryPanel.render();
+
+    // Assemble layout: SummaryPanel first in DOM for mobile (top card),
+    // but will be repositioned via CSS on desktop
+    layoutWrapper.appendChild(summaryElement);
+    layoutWrapper.appendChild(mainContent);
+
+    this._container.appendChild(layoutWrapper);
+
+    // Subscribe summary panel to store updates
+    this._summaryPanel.subscribe();
   }
 
   /**

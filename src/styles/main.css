@@ -286,11 +286,204 @@ fieldset.error legend {
 }
 
 /* ============================================
+   App Layout (Responsive Grid)
+   ============================================ */
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0; /* Prevent flex item overflow */
+}
+
+/* ============================================
+   Summary Panel Styles
+   ============================================ */
+
+.summary-panel {
+  background-color: var(--pico-card-background-color);
+  border-radius: var(--pico-border-radius);
+  padding: var(--spacing-lg);
+  box-shadow: var(--pico-card-box-shadow);
+}
+
+.summary-panel header {
+  text-align: left;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--pico-muted-border-color);
+}
+
+.summary-panel header h2 {
+  margin-bottom: 0;
+  font-size: 1.25rem;
+}
+
+/* Grand total section */
+.grand-total-section {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background-color: var(--pico-primary-focus);
+  border-radius: var(--pico-border-radius);
+}
+
+.grand-total-section .label {
+  margin-bottom: var(--spacing-xs);
+  color: var(--pico-muted-color);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.grand-total {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--pico-primary);
+  margin-bottom: 0;
+  line-height: 1.2;
+}
+
+/* Stats row */
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.stat-item {
+  text-align: center;
+  padding: var(--spacing-sm);
+  background-color: var(--pico-muted-border-color);
+  border-radius: var(--pico-border-radius);
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--pico-color);
+  margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--pico-muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0;
+}
+
+/* Denomination section */
+.denomination-section h3 {
+  font-size: 1rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Denomination table */
+.denomination-table {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.denomination-table th,
+.denomination-table td {
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.denomination-table th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pico-muted-color);
+  border-bottom: 1px solid var(--pico-muted-border-color);
+}
+
+.denomination-table td {
+  font-size: 0.9rem;
+}
+
+.denomination-table td.numeric,
+.denomination-table th.numeric {
+  text-align: right;
+}
+
+.denomination-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Flash animation for live updates */
+@keyframes flash-update {
+  0% {
+    background-color: var(--pico-primary-focus);
+  }
+  50% {
+    background-color: var(--pico-primary);
+  }
+  100% {
+    background-color: var(--pico-card-background-color);
+  }
+}
+
+.summary-panel.updated {
+  animation: flash-update 0.5s ease-out;
+}
+
+/* ============================================
+   Responsive Layout (Desktop Sidebar)
+   ============================================ */
+
+/* Mobile First: Summary panel at top (default) */
+/* Tablet and up: Adjust spacing */
+@media (min-width: 768px) {
+  .summary-panel {
+    padding: var(--spacing-xl);
+  }
+
+  .grand-total {
+    font-size: 2.5rem;
+  }
+}
+
+/* Desktop: Two-column layout with sticky sidebar */
+@media (min-width: 1024px) {
+  .app-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: var(--spacing-xl);
+    align-items: start;
+  }
+
+  /* Reorder: main content first, summary sidebar second */
+  .app-layout .main-content {
+    order: 1;
+  }
+
+  .app-layout .summary-panel {
+    order: 2;
+    position: sticky;
+    top: var(--spacing-lg);
+    max-height: calc(100vh - var(--spacing-lg) * 2);
+    overflow-y: auto;
+  }
+}
+
+/* ============================================
    Print Styles
    ============================================ */
 
 @media print {
   .storage-warning {
     display: none;
+  }
+
+  .summary-panel {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid var(--pico-muted-border-color);
   }
 }
