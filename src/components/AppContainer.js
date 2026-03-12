@@ -11,6 +11,7 @@ import { DataManager } from './DataManager.js';
 import { ContributorCard } from './ContributorCard.js';
 import { DeleteConfirmation } from './DeleteConfirmation.js';
 import { DistributionPrintView } from './DistributionPrintView.js';
+import { ThemeToggle } from './ThemeToggle.js';
 
 export class AppContainer {
   /**
@@ -32,6 +33,7 @@ export class AppContainer {
     this._contributorCards = new Map();
     this._isFormCollapsed = false; // Track form collapsed state across re-renders
     this._printView = null;
+    this._themeToggle = null;
 
     // Bind event handlers
     this._handlePrintRequest = this._handlePrintRequest.bind(this);
@@ -65,6 +67,12 @@ export class AppContainer {
       card.destroy();
     }
     this._contributorCards.clear();
+
+    // Clean up theme toggle
+    if (this._themeToggle) {
+      this._themeToggle.destroy();
+      this._themeToggle = null;
+    }
 
     // Render storage warning if using fallback
     if (this._store._storage && this._store._storage.isUsingFallback()) {
@@ -130,6 +138,11 @@ export class AppContainer {
     layoutWrapper.appendChild(mainContent);
 
     this._container.appendChild(layoutWrapper);
+
+    // Create and render theme toggle (fixed position, visible on all views)
+    this._themeToggle = new ThemeToggle();
+    const themeToggleElement = this._themeToggle.render();
+    this._container.appendChild(themeToggleElement);
 
     // Subscribe panels to store updates
     this._summaryPanel.subscribe();
@@ -370,6 +383,11 @@ export class AppContainer {
       card.destroy();
     }
     this._contributorCards.clear();
+
+    if (this._themeToggle) {
+      this._themeToggle.destroy();
+      this._themeToggle = null;
+    }
   }
 
   /**
