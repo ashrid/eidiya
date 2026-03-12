@@ -844,6 +844,40 @@ fieldset.error legend {
   margin-top: 0;
 }
 
+/* Import feedback styling */
+.import-feedback {
+  margin-top: var(--spacing-sm);
+  min-height: 1.5rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--pico-border-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  animation: fade-in 0.2s ease;
+}
+
+.import-feedback.success {
+  background-color: var(--pico-color-green-100);
+  color: var(--pico-color-green-700);
+}
+
+.import-feedback.error {
+  background-color: var(--pico-color-red-100);
+  color: var(--pico-color-red-700);
+}
+
+/* Hidden file input */
+.import-input {
+  display: none;
+}
+
+/* Button container for export/import layout */
+.data-manager-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
 /* ============================================
    Print Styles
    ============================================ */
