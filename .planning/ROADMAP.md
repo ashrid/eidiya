@@ -60,7 +60,12 @@ Plans:
 5. User can view all contributors in a scrollable list with their details visible
 6. Form submission is blocked until all validation passes
 
-**Plans:** TBD
+**Plans:** 3 plans in 3 waves
+
+Plans:
+- [ ] 02-01-PLAN.md — Denomination Validation (Wave 0) - Validation utilities and unit tests for VAL-01
+- [ ] 02-02-PLAN.md — Contributor Form Component (Wave 1) - Form with real-time validation for CONT-01, CONT-02, VAL-02
+- [ ] 02-03-PLAN.md — Form Integration & List Display (Wave 2) - Integrate form, enhance list for CONT-05
 
 ---
 
@@ -127,7 +132,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/3 | Complete    | 2026-03-11 |
-| 2. Data Entry | 0/2 | Not started | - |
+| 2. Data Entry | 0/3 | Planned     | - |
 | 3. Display & Edit | 0/2 | Not started | - |
 | 4. Distribution | 0/2 | Not started | - |
 | 5. Data Management | 0/2 | Not started | - |
@@ -179,4 +184,4 @@ Plans:
 
 ---
 
-*Last updated: 2026-03-11T18:10:00Z*
+*Last updated: 2026-03-12*
