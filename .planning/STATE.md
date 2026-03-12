@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-12T11:33:35.020Z"
+last_updated: "2026-03-12T22:33:49.969Z"
 progress:
   total_phases: 5
   completed_phases: 4
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 16
+  completed_plans: 13
 ---
 
 # Eidiya - Project State
@@ -22,15 +22,15 @@ progress:
 
 | Attribute | Value |
 |-----------|-------|
-| **Current Phase** | 04-distribution |
-| **Current Plan** | 03 |
-| **Status** | Complete - Phase 04 finished (Print View implemented) |
-| **Last Action** | Completed Plan 04-03: Printable distribution lists with per-person cards and print-optimized CSS |
+| **Current Phase** | 05-data-management |
+| **Current Plan** | 05-01 complete, ready for 05-02 |
+| **Status** | Executing - 05-01 Export complete |
+| **Last Action** | Completed 05-01: Export functionality with DataManager component |
 
 ### Progress Bar
 
 ```
-[██████████] 100% (12/12 plans complete)
+[████████████░░░░░░] 81% (13/16 plans complete)
 ```
 
 ---
@@ -42,10 +42,35 @@ progress:
 | Requirements defined | 22 v1 |
 | Requirements mapped | 22/22 (100%) |
 | Phases planned | 5 |
-| Plans created | 12 |
- | Plans executed | 12 |
+| Plans created | 16 |
+| Plans executed | 13 |
 | Blockers encountered | 0 |
 | Blockers resolved | 0 |
+
+---
+
+## Phase 5: Data Management - Planning Complete
+
+### Plans Created
+
+| Plan | Wave | Objective | Files | Requirements |
+|------|------|-----------|-------|--------------|
+| 05-00 | 0 | Test Scaffolding | DataManager.test.js, ThemeManager.js, ThemeManager.test.js, ThemeToggle.test.js | PERS-04, PERS-05, UX-04 |
+| 05-01 | 1 | Export Functionality | DataManager.js, main.css | PERS-04 |
+| 05-02 | 2 | Import Functionality | DataManager.js, main.css | PERS-05 |
+| 05-03 | 3 | Dark Mode | ThemeManager.js, ThemeToggle.js, index.html, main.css | UX-04 |
+
+### Wave Structure
+
+```
+Wave 0: 05-00 (Test Scaffolding)
+    |
+Wave 1: 05-01 (Export)
+    |
+Wave 2: 05-02 (Import)
+    |
+Wave 3: 05-03 (Dark Mode)
+```
 
 ---
 
@@ -78,6 +103,11 @@ progress:
 | Status badges with auto-dismiss | 2-second acknowledgment feedback | Decided |
 | Custom event for print workflow | 'eidiya:print-distribution' decouples DistributionPanel from AppContainer | Decided |
 | Auto-approved checkpoint | Print view verified via automated tests (auto_mode enabled) | Decided |
+| Native File API for export/import | No dependencies, works offline | Decided |
+| Export filename with ISO date | Easy sorting, human-readable | Decided |
+| Export metadata (exportedAt, appVersion) | Track when/what version exported | Decided |
+| ThemeManager singleton object | Simpler than class for global state | Decided |
+| Early theme script in HTML | Prevents flash of wrong theme | Decided |
 
 ### Critical Pitfalls to Avoid
 
@@ -94,6 +124,8 @@ progress:
 11. ~~Distribution Tracking Data Model~~ - MITIGATED: Schema v1.1.0 with received field, migration defaults to false
 12. ~~Distribution Tracking UI~~ - MITIGATED: Received toggle in ContributorCard, DistributionPanel with progress and remaining notes
 13. **Print View Generation** - MITIGATED: DistributionPrintView component with print-optimized CSS and window.print() integration
+14. **Import Data Corruption** - AVOID: Always validate imported data against schema using validateState()
+15. **Theme Flash on Load** - AVOID: Set data-theme in HTML head before CSS loads
 
 ### Open Questions
 
@@ -109,22 +141,23 @@ None at this time.
 
 ### Last Completed Work
 
-Plan 04-03: Print View - Printable distribution lists for physical handout during Eid:
-- Created DistributionPrintView component with per-person distribution cards
-- Cards show name, formatted AED amount, denomination breakdown, and blank checkbox
-- Added comprehensive print CSS hiding all UI chrome
-- Integrated print button via custom event 'eidiya:print-distribution'
-- Print view sorted alphabetically by contributor name
-- All 300 tests pass (including 19 new DistributionPrintView tests)
+05-01 Export functionality complete:
+- DataManager component with exportData() method
+- JSON export with date-stamped filenames (eidiya-backup-YYYY-MM-DD.json)
+- Export metadata includes exportedAt and appVersion
+- Export button integrated in sidebar
+- 11 tests passing
 
 ### Next Action
 
-Phase 04 complete. Ready for Phase 05: Data Management - Export/import and UI polish
+Execute 05-02: Import functionality with file upload and schema validation
 
 ### Context for New Sessions
 
 This is a client-side only, single-user web application for tracking Eid money contributions with AED denomination breakdowns. The app uses vanilla JavaScript with Vite for development, Pico CSS for styling, and localStorage for persistence. No backend or authentication required.
 
+Phase 5 adds data portability (export/import JSON) and dark mode support. Export uses Blob + URL.createObjectURL + anchor download. Import uses FileReader + JSON.parse + schema validation. Dark mode uses Pico CSS data-theme attribute with localStorage persistence.
+
 ---
 
-*Last updated: 2026-03-12T11:29:06Z*
+*Last updated: 2026-03-12T13:24:00Z*

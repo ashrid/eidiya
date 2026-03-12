@@ -11,8 +11,8 @@
 
 - [x] **Phase 1: Foundation** - Data layer, persistence, and calculation engine (completed 2026-03-11)
 - [x] **Phase 2: Data Entry** - Add contributors with denomination breakdown and validation (completed 2026-03-12)
-- [ ] **Phase 3: Display & Edit** - View contributors, totals, and manage entries
-- [ ] **Phase 4: Distribution** - Track receipts and generate printable lists
+- [x] **Phase 3: Display & Edit** - View contributors, totals, and manage entries (completed 2026-03-12)
+- [x] **Phase 4: Distribution** - Track receipts and generate printable lists (completed 2026-03-12)
 - [ ] **Phase 5: Data Management** - Export/import and UI polish
 
 ---
@@ -89,7 +89,7 @@ Plans:
 
 Plans:
 - [x] 03-01-PLAN.md — Summary Dashboard (Wave 1) - Aggregate calculations and responsive summary component for SUM-01, SUM-02, SUM-03
-- [ ] 03-02-PLAN.md — Edit & Delete Management (Wave 2) - Store actions, inline editing, delete confirmation for CONT-03, CONT-04, UX-03
+- [x] 03-02-PLAN.md — Edit & Delete Management (Wave 2) - Store actions, inline editing, delete confirmation for CONT-03, CONT-04, UX-03
 
 ---
 
@@ -133,13 +133,13 @@ Plans:
 4. App supports both light and dark color modes
 5. Mode preference persists across sessions
 
-**Plans:** 4 plans in 3 waves
+**Plans:** 1/4 plans executed
 
 Plans:
-- [x] 04-00-PLAN.md — Test Scaffolding (Wave 0) - Distribution selectors, panel, and print view tests
-- [x] 04-01-PLAN.md — Schema & Selectors (Wave 1) - Add received field, migration, distribution selectors for DIST-01
-- [x] 04-02-PLAN.md — Received Toggle & Distribution Panel (Wave 2) - UI components, remaining notes display for DIST-01, DIST-02
-- [x] 04-03-PLAN.md — Print View (Wave 3) - Printable distribution lists for DIST-03
+- [ ] 05-00-PLAN.md — Test Scaffolding (Wave 0) - DataManager and ThemeManager test scaffolding
+- [ ] 05-01-PLAN.md — Export Functionality (Wave 1) - JSON export with file download for PERS-04
+- [ ] 05-02-PLAN.md — Import Functionality (Wave 2) - JSON import with validation for PERS-05
+- [ ] 05-03-PLAN.md — Dark Mode (Wave 3) - Theme toggle, persistence, and UI for UX-04
 
 ---
 
@@ -151,7 +151,7 @@ Plans:
 | 2. Data Entry | 3/3 | Complete    | 2026-03-12 |
 | 3. Display & Edit | 2/2 | Complete | 2026-03-12 |
 | 4. Distribution | 4/4 | Complete | 2026-03-12 |
-| 5. Data Management | 0/2 | Not started | - |
+| 5. Data Management | 1/4 | In Progress|  |
 
 ---
 
@@ -161,8 +161,8 @@ Plans:
 |-------------|-------|--------|
 | CONT-01 | Phase 2 | Complete |
 | CONT-02 | Phase 2 | Complete |
-| CONT-03 | Phase 3 | Planned |
-| CONT-04 | Phase 3 | Planned |
+| CONT-03 | Phase 3 | Complete |
+| CONT-04 | Phase 3 | Complete |
 | CONT-05 | Phase 2 | Complete |
 | VAL-01 | Phase 2 | Complete |
 | VAL-02 | Phase 2 | Complete |
@@ -176,12 +176,12 @@ Plans:
 | PERS-01 | Phase 1 | Complete |
 | PERS-02 | Phase 1 | Complete |
 | PERS-03 | Phase 1 | Complete |
-| PERS-04 | Phase 5 | Pending |
-| PERS-05 | Phase 5 | Pending |
-| UX-01 | Phase 1 | In Progress |
+| PERS-04 | Phase 5 | Planned |
+| PERS-05 | Phase 5 | Planned |
+| UX-01 | Phase 1 | Complete |
 | UX-02 | Phase 1 | Complete |
-| UX-03 | Phase 3 | Planned |
-| UX-04 | Phase 5 | Pending |
+| UX-03 | Phase 3 | Complete |
+| UX-04 | Phase 5 | Planned |
 
 **Coverage Summary:**
 - v1 requirements: 22 total

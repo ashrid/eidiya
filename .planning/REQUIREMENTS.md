@@ -38,7 +38,7 @@
 - [x] **PERS-01**: System saves all data to localStorage automatically
 - [x] **PERS-02**: System loads data from localStorage on app start
 - [x] **PERS-03**: System handles localStorage errors gracefully (quota exceeded, private mode)
-- [ ] **PERS-04**: User can export data as JSON file
+- [x] **PERS-04**: User can export data as JSON file
 - [ ] **PERS-05**: User can import data from JSON file
 
 ### UI/UX (UX)
@@ -100,7 +100,7 @@
 | PERS-01 | Phase 1 | Complete |
 | PERS-02 | Phase 1 | Complete |
 | PERS-03 | Phase 1 | Complete |
-| PERS-04 | Phase 5 | Pending |
+| PERS-04 | Phase 5 | Complete |
 | PERS-05 | Phase 5 | Pending |
 | UX-01 | Phase 1 | Complete |
 | UX-02 | Phase 1 | Complete |
