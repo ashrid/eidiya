@@ -347,4 +347,200 @@ describe('ContributorCard', () => {
       expect(true).toBe(true); // If we get here, no error was thrown
     });
   });
+
+  describe('received toggle', () => {
+    it('should show received checkbox when contributor has received field', () => {
+      // Re-create card with received field
+      card.destroy();
+      document.body.innerHTML = '';
+
+      const contributorWithReceived = {
+        ...mockContributor,
+        received: false,
+      };
+
+      card = new ContributorCard(contributorWithReceived, {
+        onUpdate,
+        onDeleteRequest,
+      });
+      document.body.appendChild(card.render());
+
+      const checkbox = document.querySelector('[data-field="received"] input[type="checkbox"]');
+      expect(checkbox).not.toBeNull();
+    });
+
+    it('should have checkbox checked when received is true', () => {
+      card.destroy();
+      document.body.innerHTML = '';
+
+      const contributorReceived = {
+        ...mockContributor,
+        received: true,
+      };
+
+      card = new ContributorCard(contributorReceived, {
+        onUpdate,
+        onDeleteRequest,
+      });
+      document.body.appendChild(card.render());
+
+      const checkbox = document.querySelector('[data-field="received"] input[type="checkbox"]');
+      expect(checkbox).not.toBeNull();
+      expect(checkbox.checked).toBe(true);
+    });
+
+    it('should have checkbox unchecked when received is false', () => {
+      card.destroy();
+      document.body.innerHTML = '';
+
+      const contributorNotReceived = {
+        ...mockContributor,
+        received: false,
+      };
+
+      card = new ContributorCard(contributorNotReceived, {
+        onUpdate,
+        onDeleteRequest,
+      });
+      document.body.appendChild(card.render());
+
+      const checkbox = document.querySelector('[data-field="received"] input[type="checkbox"]');
+      expect(checkbox).not.toBeNull();
+      expect(checkbox.checked).toBe(false);
+    });
+
+    it('should have checkbox unchecked when received is undefined', () => {
+      card.destroy();
+      document.body.innerHTML = '';
+
+      const contributorNoReceived = {
+        ...mockContributor,
+        // received field not defined
+      };
+
+      card = new ContributorCard(contributorNoReceived, {
+        onUpdate,
+        onDeleteRequest,
+      });
+      document.body.appendChild(card.render());
+
+      const checkbox = document.querySelector('[data-field="received"] input[type="checkbox"]');
+      expect(checkbox).not.toBeNull();
+      expect(checkbox.checked).toBe(false);
+    });
+
+    it('should call onUpdate with received value when checkbox clicked', async () => {
+      card.destroy();
+      document.body.innerHTML = '';
+
+      const contributorNotReceived = {
+        ...mockContributor,
+        received: false,
+      };
+
+      card = new ContributorCard(contributorNotReceived, {
+        onUpdate,
+        onDeleteRequest,
+      });
+      document.body.appendChild(card.render());
+
+      const checkbox = document.querySelector('[data-field="received"] input[type="checkbox"]');
+      expect(checkbox).not.toBeNull();
+
+      // Simulate checking the checkbox
+      checkbox.checked = true;
+      checkbox.dispatchEvent(new Event('change'));
+
+      // Wait for async operations
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      expect(onUpdate).toHaveBeenCalledWith('test-id-123', { received: true });
+    });
+
+    it('should call onUpdate with received false when checkbox unchecked', async () => {
+      card.destroy();
+      document.body.innerHTML = '';
+
+      const contributorReceived = {
+        ...mockContributor,
+        received: true,
+      };
+
+      card = new ContributorCard(contributorReceived, {
+        onUpdate,
+        onDeleteRequest,
+      });
+      document.body.appendChild(card.render());
+
+      const checkbox = document.querySelector('[data-field="received"] input[type="checkbox"]');
+      expect(checkbox).not.toBeNull();
+
+      // Simulate unchecking the checkbox
+      checkbox.checked = false;
+      checkbox.dispatchEvent(new Event('change'));
+
+      // Wait for async operations
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      expect(onUpdate).toHaveBeenCalledWith('test-id-123', { received: false });
+    });
+
+    it('should have received class on card when contributor.received is true', () => {
+      card.destroy();
+      document.body.innerHTML = '';
+
+      const contributorReceived = {
+        ...mockContributor,
+        received: true,
+      };
+
+      card = new ContributorCard(contributorReceived, {
+        onUpdate,
+        onDeleteRequest,
+      });
+      document.body.appendChild(card.render());
+
+      const cardEl = document.querySelector('.contributor-card');
+      expect(cardEl.classList.contains('received')).toBe(true);
+    });
+
+    it('should not have received class when contributor.received is false', () => {
+      card.destroy();
+      document.body.innerHTML = '';
+
+      const contributorNotReceived = {
+        ...mockContributor,
+        received: false,
+      };
+
+      card = new ContributorCard(contributorNotReceived, {
+        onUpdate,
+        onDeleteRequest,
+      });
+      document.body.appendChild(card.render());
+
+      const cardEl = document.querySelector('.contributor-card');
+      expect(cardEl.classList.contains('received')).toBe(false);
+    });
+
+    it('should have aria-label on received checkbox for accessibility', () => {
+      card.destroy();
+      document.body.innerHTML = '';
+
+      const contributorWithReceived = {
+        ...mockContributor,
+        received: false,
+      };
+
+      card = new ContributorCard(contributorWithReceived, {
+        onUpdate,
+        onDeleteRequest,
+      });
+      document.body.appendChild(card.render());
+
+      const checkbox = document.querySelector('[data-field="received"] input[type="checkbox"]');
+      expect(checkbox).not.toBeNull();
+      expect(checkbox.getAttribute('aria-label')).toMatch(/received|mark as received/i);
+    });
+  });
 });
