@@ -106,21 +106,29 @@ export class ContributorForm {
 
     // Add denomination inputs (ordered smallest to largest)
     const denominations = [
-      { key: 'five', label: '5 AED' },
-      { key: 'ten', label: '10 AED' },
-      { key: 'twenty', label: '20 AED' },
-      { key: 'fifty', label: '50 AED' },
-      { key: 'hundred', label: '100 AED' },
-      { key: 'twoHundred', label: '200 AED' },
-      { key: 'fiveHundred', label: '500 AED' },
-      { key: 'thousand', label: '1000 AED' },
+      { key: 'five', label: '5 AED', value: 5 },
+      { key: 'ten', label: '10 AED', value: 10 },
+      { key: 'twenty', label: '20 AED', value: 20 },
+      { key: 'fifty', label: '50 AED', value: 50 },
+      { key: 'hundred', label: '100 AED', value: 100 },
+      { key: 'twoHundred', label: '200 AED', value: 200 },
+      { key: 'fiveHundred', label: '500 AED', value: 500 },
+      { key: 'thousand', label: '1000 AED', value: 1000 },
     ];
 
-    for (const { key, label } of denominations) {
-      grid.appendChild(this._createDenominationField(key, label));
+    for (const { key, label, value } of denominations) {
+      grid.appendChild(this._createDenominationField(key, label, value));
     }
 
     fieldset.appendChild(grid);
+
+    // Add remaining indicator
+    const remainingEl = document.createElement('div');
+    remainingEl.className = 'breakdown-remaining';
+    remainingEl.id = 'form-breakdown-remaining';
+    remainingEl.textContent = 'Enter total amount to see remaining';
+    fieldset.appendChild(remainingEl);
+
     form.appendChild(fieldset);
 
     // Submit button
@@ -259,7 +267,7 @@ export class ContributorForm {
    * Create a denomination count field
    * @private
    */
-  _createDenominationField(key, label) {
+  _createDenominationField(key, label, denomValue) {
     const group = document.createElement('div');
     group.className = 'denomination-field';
 
@@ -275,6 +283,8 @@ export class ContributorForm {
     input.min = '0';
     input.step = '1';
     input.value = this._values.breakdown[key] || 0;
+    input.dataset.denomValue = denomValue;
+    input.addEventListener('input', () => this._updateRemainingIndicator());
     group.appendChild(input);
 
     // Denomination fields don't show inline errors, but we need the entry for consistency
@@ -301,6 +311,10 @@ export class ContributorForm {
 
       input.addEventListener('input', () => {
         this._values[fieldName] = input.value;
+        // Update remaining indicator when total amount changes
+        if (fieldName === 'totalAmount') {
+          this._updateRemainingIndicator();
+        }
         // Clear error on input after validation
         if (input.getAttribute('aria-invalid') === 'true') {
           this._validateField(fieldName);
@@ -310,6 +324,57 @@ export class ContributorForm {
 
     // Form submission
     form.addEventListener('submit', (e) => this._handleSubmit(e));
+  }
+
+  /**
+   * Update the remaining indicator for breakdown
+   * @private
+   */
+  _updateRemainingIndicator() {
+    const remainingEl = this._element?.querySelector('#form-breakdown-remaining');
+    if (!remainingEl) return;
+
+    // Get total amount
+    const totalAmountInput = this._element?.querySelector('[name="totalAmount"]');
+    const totalAmount = parseFloat(totalAmountInput?.value) || 0;
+    const totalFils = Math.round(totalAmount * 100);
+
+    if (totalFils === 0) {
+      remainingEl.className = 'breakdown-remaining';
+      remainingEl.textContent = 'Enter total amount to see remaining';
+      return;
+    }
+
+    // Calculate breakdown total
+    const grid = this._element?.querySelector('.denomination-grid');
+    if (!grid) return;
+
+    const inputs = grid.querySelectorAll('input');
+    let breakdownFils = 0;
+
+    for (const input of inputs) {
+      const count = parseInt(input.value, 10) || 0;
+      const value = parseInt(input.dataset.denomValue, 10) || 0;
+      breakdownFils += count * value * 100;
+    }
+
+    const remainingFils = totalFils - breakdownFils;
+    const remainingAED = Math.abs(remainingFils) / 100;
+    const formattedRemaining = remainingAED.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+    if (remainingFils === 0) {
+      remainingEl.className = 'breakdown-remaining balanced';
+      remainingEl.textContent = '✓ Breakdown matches total';
+    } else if (remainingFils > 0) {
+      remainingEl.className = 'breakdown-remaining remaining';
+      remainingEl.textContent = `${formattedRemaining} AED remaining to allocate`;
+    } else {
+      remainingEl.className = 'breakdown-remaining excess';
+      remainingEl.textContent = `${formattedRemaining} AED over allocated`;
+    }
   }
 
   /**
