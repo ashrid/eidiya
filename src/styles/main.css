@@ -823,6 +823,28 @@ fieldset.error legend {
 }
 
 /* ============================================
+   Data Manager Styles
+   ============================================ */
+
+.data-manager {
+  background-color: var(--pico-card-background-color);
+  border-radius: var(--pico-border-radius);
+  padding: var(--spacing-lg);
+  box-shadow: var(--pico-card-box-shadow);
+  margin-top: var(--spacing-lg);
+}
+
+.data-manager button {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+/* Position in sidebar - remove margin when inside sidebar container */
+.sidebar-container .data-manager {
+  margin-top: 0;
+}
+
+/* ============================================
    Print Styles
    ============================================ */
 
