@@ -113,7 +113,7 @@ Plans:
 Plans:
 - [x] 04-00-PLAN.md — Test Scaffolding (Wave 0) - Distribution selectors, panel, and print view tests
 - [x] 04-01-PLAN.md — Schema & Selectors (Wave 1) - Add received field, migration, distribution selectors for DIST-01
-- [ ] 04-02-PLAN.md — Received Toggle & Distribution Panel (Wave 2) - UI components, remaining notes display for DIST-01, DIST-02
+- [x] 04-02-PLAN.md — Received Toggle & Distribution Panel (Wave 2) - UI components, remaining notes display for DIST-01, DIST-02
 - [ ] 04-03-PLAN.md — Print View (Wave 3) - Printable distribution lists for DIST-03
 
 ---
@@ -150,7 +150,7 @@ Plans:
 | 1. Foundation | 3/3 | Complete    | 2026-03-11 |
 | 2. Data Entry | 3/3 | Complete    | 2026-03-12 |
 | 3. Display & Edit | 2/2 | Complete | 2026-03-12 |
-| 4. Distribution | 2/4 | In Progress | 2026-03-12 |
+| 4. Distribution | 3/4 | In Progress | 2026-03-12 |
 | 5. Data Management | 0/2 | Not started | - |
 
 ---
@@ -170,8 +170,8 @@ Plans:
 | SUM-01 | Phase 3 | Complete |
 | SUM-02 | Phase 3 | Complete |
 | SUM-03 | Phase 3 | Complete |
-| DIST-01 | Phase 4 | Pending |
-| DIST-02 | Phase 4 | Pending |
+| DIST-01 | Phase 4 | Complete |
+| DIST-02 | Phase 4 | Complete |
 | DIST-03 | Phase 4 | Pending |
 | PERS-01 | Phase 1 | Complete |
 | PERS-02 | Phase 1 | Complete |
