@@ -105,6 +105,10 @@ Each task was committed atomically:
    - Replaced single-line text edit with full denomination input grid
    - Added real-time remaining indicator (balanced/remaining/excess)
    - Added explicit Save/Cancel buttons for breakdown editing
+8. **Add real-time remaining indicator to Add Contributor form** - `8eed928` (feat)
+   - Ported the same breakdown remaining indicator to the Add Contributor form
+   - Shows allocation status in real-time when entering denominations
+   - Updates dynamically when total amount or denomination values change
 
 ## Files Created/Modified
 
