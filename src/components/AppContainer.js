@@ -153,8 +153,33 @@ export class AppContainer {
     amount.style.fontWeight = '600';
     amount.textContent = formatAED(contributor.amountInFils);
 
+    // Add denomination breakdown
+    const breakdownDiv = document.createElement('div');
+    breakdownDiv.className = 'denomination-breakdown';
+
+    // Only show denominations with count > 0
+    const notes = [
+      { value: 5, count: contributor.breakdown.five },
+      { value: 10, count: contributor.breakdown.ten },
+      { value: 20, count: contributor.breakdown.twenty },
+      { value: 50, count: contributor.breakdown.fifty },
+      { value: 100, count: contributor.breakdown.hundred },
+      { value: 200, count: contributor.breakdown.twoHundred },
+      { value: 500, count: contributor.breakdown.fiveHundred },
+      { value: 1000, count: contributor.breakdown.thousand },
+    ].filter(n => n.count > 0);
+
+    if (notes.length > 0) {
+      breakdownDiv.textContent = notes
+        .map(n => `${n.value} AED x ${n.count}`)
+        .join(', ');
+    } else {
+      breakdownDiv.textContent = 'No denomination breakdown';
+    }
+
     article.appendChild(header);
     article.appendChild(amount);
+    article.appendChild(breakdownDiv);
 
     return article;
   }

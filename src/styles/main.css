@@ -248,6 +248,20 @@ fieldset.error legend {
 }
 
 /* ============================================
+   Contributor Card Styles
+   ============================================ */
+
+.contributor-card {
+  margin-bottom: var(--pico-spacing);
+}
+
+.denomination-breakdown {
+  font-size: 0.9rem;
+  color: var(--pico-muted-color);
+  margin-top: var(--pico-spacing);
+}
+
+/* ============================================
    Print Styles
    ============================================ */
 
