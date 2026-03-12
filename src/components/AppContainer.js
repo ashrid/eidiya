@@ -25,6 +25,7 @@ export class AppContainer {
     this._deleteConfirmation = null;
     this._editingContributorId = null;
     this._contributorCards = new Map();
+    this._isFormCollapsed = false; // Track form collapsed state across re-renders
   }
 
   /**
@@ -60,13 +61,17 @@ export class AppContainer {
 
     // Render form (always at top of main content)
     const hasContributors = state.contributors.length > 0;
+    // Default to collapsed only on first render when contributors exist
+    if (hasContributors && !this._form) {
+      this._isFormCollapsed = true;
+    }
     this._form = new ContributorForm(
       (data) => this._handleFormSubmit(data),
       {
-        initiallyCollapsed: hasContributors,
+        initiallyCollapsed: this._isFormCollapsed,
         hasContributors: hasContributors,
         onToggle: (collapsed) => {
-          // Re-render to show/hide form
+          this._isFormCollapsed = collapsed;
           this.render();
         }
       }
@@ -277,6 +282,9 @@ export class AppContainer {
       amountInFils: contributorData.amountInFils,
       breakdown: contributorData.breakdown
     });
+
+    // Keep form collapsed after adding (user can click to show again)
+    this._isFormCollapsed = true;
 
     // Notify parent (for any additional handling)
     this._onAddContributor(contributorData);

@@ -319,7 +319,10 @@ export class ContributorCard {
   _exitEditMode() {
     this._isEditing = false;
     this._onEditEnd();
-    this._element.classList.remove('editing');
+    // Guard: element may be null if store re-render destroyed the card
+    if (this._element) {
+      this._element.classList.remove('editing');
+    }
   }
 
   /**
@@ -327,6 +330,9 @@ export class ContributorCard {
    * @private
    */
   _renderField(field) {
+    // Guard: element may be null if store re-render destroyed the card
+    if (!this._element) return;
+
     const fieldEl = this._element.querySelector(`[data-field="${field}"]`);
     if (!fieldEl) return;
 

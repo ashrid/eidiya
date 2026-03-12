@@ -90,7 +90,11 @@ Each task was committed atomically:
 3. **Task 3: Create ContributorCard component with inline editing** - `638d8a8` (feat)
 4. **Task 4: Integrate components into AppContainer** - `91b4308` (feat)
 
-**Plan metadata:** (to be committed)
+**Bug Fix Commits:**
+
+5. **Fix denomination field error handling and status badge timing** - `40db134` (fix)
+   - Fixed `_createDenominationField` element structure
+   - Fixed status badge timing in `_saveEdit`
 
 ## Files Created/Modified
 
@@ -121,6 +125,8 @@ None - plan executed exactly as written.
 
 1. **jsdom doesn't support HTMLDialogElement**: Added test-setup.js with mock implementation and graceful fallback in component code
 2. **Status badge tests timing**: Adjusted tests to use real timers with small delays instead of fake timers for blur event handling
+3. **Bug: Denomination field error handling** (post-implementation): `_createDenominationField` stored elements as `{ input, group }` but `_clearFieldError` expected `{ input, error }`. Fixed by using `{ input, error: null }` and adding null check in `_clearFieldError`.
+4. **Bug: Status badge not showing on edit** (post-implementation): `_showStatus` was called after store dispatch, but store notification triggers re-render which destroys the card. Fixed by showing status BEFORE dispatching to store.
 
 ## Next Phase Readiness
 
