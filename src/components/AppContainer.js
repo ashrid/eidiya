@@ -6,6 +6,8 @@
 import { formatAED } from '@modules/money/formatters.js';
 import { ContributorForm } from './ContributorForm.js';
 import { SummaryPanel } from './SummaryPanel.js';
+import { ContributorCard } from './ContributorCard.js';
+import { DeleteConfirmation } from './DeleteConfirmation.js';
 
 export class AppContainer {
   /**
@@ -20,6 +22,9 @@ export class AppContainer {
     this._onAddContributor = options.onAddContributor || (() => {});
     this._form = null;
     this._summaryPanel = null;
+    this._deleteConfirmation = null;
+    this._editingContributorId = null;
+    this._contributorCards = new Map();
   }
 
   /**
@@ -28,12 +33,17 @@ export class AppContainer {
   render() {
     const state = this._store.getState();
 
-    // Clear current content and clean up old summary panel
+    // Clear current content and clean up old components
     this._container.innerHTML = '';
     if (this._summaryPanel) {
       this._summaryPanel.destroy();
       this._summaryPanel = null;
     }
+    // Clean up old contributor cards
+    for (const card of this._contributorCards.values()) {
+      card.destroy();
+    }
+    this._contributorCards.clear();
 
     // Render storage warning if using fallback
     if (this._store._storage && this._store._storage.isUsingFallback()) {
@@ -83,6 +93,77 @@ export class AppContainer {
 
     // Subscribe summary panel to store updates
     this._summaryPanel.subscribe();
+
+    // Initialize delete confirmation modal
+    this._initDeleteConfirmation();
+  }
+
+  /**
+   * Initialize the delete confirmation modal
+   * @private
+   */
+  _initDeleteConfirmation() {
+    this._deleteConfirmation = new DeleteConfirmation(
+      (id) => this._handleDeleteConfirm(id),
+      () => {} // No action on cancel
+    );
+  }
+
+  /**
+   * Handle delete confirmation
+   * @private
+   */
+  _handleDeleteConfirm(id) {
+    // Delete from store
+    this._store.deleteContributor(id);
+
+    // Show deleted status on the card (if it still exists briefly)
+    const card = this._contributorCards.get(id);
+    if (card) {
+      card._showStatus?.('Deleted', 'success');
+    }
+  }
+
+  /**
+   * Handle contributor update
+   * @private
+   */
+  _handleContributorUpdate(id, updates) {
+    this._store.updateContributor(id, updates);
+  }
+
+  /**
+   * Handle delete request from a card
+   * @private
+   */
+  _handleDeleteRequest(contributor) {
+    this._deleteConfirmation.show(contributor);
+  }
+
+  /**
+   * Handle edit start - dim other cards
+   * @private
+   */
+  _handleEditStart(id) {
+    this._editingContributorId = id;
+    // Dim all other cards
+    for (const [cardId, card] of this._contributorCards) {
+      if (cardId !== id) {
+        card.setDimmed(true);
+      }
+    }
+  }
+
+  /**
+   * Handle edit end - remove dimming
+   * @private
+   */
+  _handleEditEnd() {
+    this._editingContributorId = null;
+    // Remove dimming from all cards
+    for (const card of this._contributorCards.values()) {
+      card.setDimmed(false);
+    }
   }
 
   /**
@@ -124,7 +205,7 @@ export class AppContainer {
   }
 
   /**
-   * Render contributors list (placeholder for future implementation)
+   * Render contributors list with ContributorCard components
    * @param {Object} state - Current app state
    * @returns {HTMLElement}
    * @private
@@ -146,10 +227,19 @@ export class AppContainer {
       0
     );
 
-    // Render each contributor
+    // Render each contributor using ContributorCard
     state.contributors.forEach(contributor => {
-      const card = this._renderContributorCard(contributor);
-      list.appendChild(card);
+      const isDimmed = this._editingContributorId && this._editingContributorId !== contributor.id;
+      const card = new ContributorCard(contributor, {
+        onUpdate: (id, updates) => this._handleContributorUpdate(id, updates),
+        onDeleteRequest: (c) => this._handleDeleteRequest(c),
+        onEditStart: (id) => this._handleEditStart(id),
+        onEditEnd: () => this._handleEditEnd(),
+        isDimmed,
+      });
+
+      this._contributorCards.set(contributor.id, card);
+      list.appendChild(card.render());
     });
 
     container.appendChild(list);
@@ -172,64 +262,6 @@ export class AppContainer {
     container.appendChild(totalSection);
 
     return container;
-  }
-
-  /**
-   * Render a single contributor card
-   * @param {Object} contributor - Contributor data
-   * @returns {HTMLElement}
-   * @private
-   */
-  _renderContributorCard(contributor) {
-    const article = document.createElement('article');
-    article.className = 'contributor-card';
-
-    const header = document.createElement('header');
-
-    const name = document.createElement('h3');
-    name.textContent = contributor.name;
-
-    const date = document.createElement('small');
-    date.textContent = new Date(contributor.date).toLocaleDateString();
-
-    header.appendChild(name);
-    header.appendChild(date);
-
-    const amount = document.createElement('p');
-    amount.className = 'amount';
-    amount.style.fontSize = '1.25rem';
-    amount.style.fontWeight = '600';
-    amount.textContent = formatAED(contributor.amountInFils);
-
-    // Add denomination breakdown
-    const breakdownDiv = document.createElement('div');
-    breakdownDiv.className = 'denomination-breakdown';
-
-    // Only show denominations with count > 0
-    const notes = [
-      { value: 5, count: contributor.breakdown.five },
-      { value: 10, count: contributor.breakdown.ten },
-      { value: 20, count: contributor.breakdown.twenty },
-      { value: 50, count: contributor.breakdown.fifty },
-      { value: 100, count: contributor.breakdown.hundred },
-      { value: 200, count: contributor.breakdown.twoHundred },
-      { value: 500, count: contributor.breakdown.fiveHundred },
-      { value: 1000, count: contributor.breakdown.thousand },
-    ].filter(n => n.count > 0);
-
-    if (notes.length > 0) {
-      breakdownDiv.textContent = notes
-        .map(n => `${n.value} AED x ${n.count}`)
-        .join(', ');
-    } else {
-      breakdownDiv.textContent = 'No denomination breakdown';
-    }
-
-    article.appendChild(header);
-    article.appendChild(amount);
-    article.appendChild(breakdownDiv);
-
-    return article;
   }
 
   /**

@@ -253,12 +253,194 @@ fieldset.error legend {
 
 .contributor-card {
   margin-bottom: var(--pico-spacing);
+  position: relative;
+  transition: opacity 0.2s ease;
+}
+
+.contributor-card.editing {
+  box-shadow: 0 0 0 2px var(--pico-primary);
+  z-index: 10;
+}
+
+.contributor-card.dimmed {
+  opacity: 0.5;
+}
+
+.contributor-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-sm);
+}
+
+.contributor-card .contributor-name {
+  margin-bottom: 0;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--pico-border-radius);
+  transition: background-color 0.2s ease;
+}
+
+.contributor-card .contributor-name:hover {
+  background-color: var(--pico-muted-border-color);
+}
+
+.contributor-card .contributor-date {
+  display: block;
+  margin-top: var(--spacing-xs);
+}
+
+.contributor-card .contributor-amount {
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--pico-border-radius);
+  transition: background-color 0.2s ease;
+  margin-bottom: var(--spacing-sm);
+}
+
+.contributor-card .contributor-amount:hover {
+  background-color: var(--pico-muted-border-color);
+}
+
+.contributor-card .breakdown-section {
+  margin-top: var(--spacing-sm);
+}
+
+.contributor-card .breakdown-text {
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--pico-border-radius);
+  transition: background-color 0.2s ease;
+  margin-bottom: 0;
+}
+
+.contributor-card .breakdown-text:hover {
+  background-color: var(--pico-muted-border-color);
 }
 
 .denomination-breakdown {
   font-size: 0.9rem;
   color: var(--pico-muted-color);
   margin-top: var(--pico-spacing);
+}
+
+/* Menu Button and Dropdown */
+.menu-container {
+  position: relative;
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  line-height: 1;
+  color: var(--pico-muted-color);
+  transition: color 0.2s ease;
+}
+
+.menu-button:hover {
+  color: var(--pico-color);
+}
+
+.action-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: var(--pico-border-radius);
+  box-shadow: var(--pico-card-box-shadow);
+  z-index: 100;
+  min-width: 120px;
+  padding: var(--spacing-xs);
+}
+
+.action-menu[hidden] {
+  display: none;
+}
+
+.menu-item {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-sm);
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--pico-border-radius);
+  transition: background-color 0.2s ease;
+}
+
+.menu-item:hover {
+  background-color: var(--pico-muted-border-color);
+}
+
+/* Inline Edit Input */
+.inline-edit-input {
+  width: 100%;
+  margin: 0;
+}
+
+.inline-error {
+  display: block;
+  color: var(--pico-color-red-500);
+  font-size: 0.875rem;
+  margin-top: var(--spacing-xs);
+}
+
+/* Status Badge */
+.status-container {
+  margin-top: var(--spacing-sm);
+  min-height: 1.5rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--pico-border-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  animation: fade-in 0.2s ease;
+}
+
+.status-badge.success {
+  background-color: var(--pico-color-green-500);
+  color: white;
+}
+
+.status-badge.error {
+  background-color: var(--pico-color-red-500);
+  color: white;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Delete Confirmation Dialog */
+.delete-confirmation::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.delete-confirmation article {
+  margin: 0;
+}
+
+.delete-confirmation footer {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
 }
 
 /* ============================================
