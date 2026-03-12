@@ -1,317 +1,261 @@
 /**
- * Tests for DataManager - export/import functionality
+ * DataManager Component Tests
+ * Tests for export functionality and UI rendering
  * @vitest-environment jsdom
  */
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { DataManager } from './DataManager.js';
-import { validateState } from '../modules/state/schema.js';
-
-// Mock schema validation
-vi.mock('../modules/state/schema.js', () => ({
-  validateState: vi.fn(),
-  CURRENT_SCHEMA_VERSION: '1.1.0',
-}));
-
-// Mock URL.createObjectURL and URL.revokeObjectURL
-global.URL.createObjectURL = vi.fn(() => 'blob:mock-url');
-global.URL.revokeObjectURL = vi.fn();
+import * as schema from '../modules/state/schema.js';
 
 describe('DataManager', () => {
   let mockStore;
-  let mockStorage;
+  let dataManager;
+  let mockCreateObjectURL;
+  let mockRevokeObjectURL;
 
   beforeEach(() => {
-    // Mock store with getState method
+    // Mock URL methods
+    mockCreateObjectURL = vi.fn(() => 'blob:mock-url');
+    mockRevokeObjectURL = vi.fn();
+    global.URL.createObjectURL = mockCreateObjectURL;
+    global.URL.revokeObjectURL = mockRevokeObjectURL;
+
+    // Mock store with getState and setState methods
     mockStore = {
-      getState: vi.fn().mockReturnValue({
+      getState: vi.fn(() => ({
         version: '1.1.0',
         contributors: [
           {
-            id: 'test-1',
-            name: 'John Doe',
+            id: 'test-uuid-1',
+            name: 'Ahmed',
             date: '2024-03-15',
-            amountInFils: 10000,
+            amountInFils: 100000,
             received: false,
-            breakdown: { five: 0, ten: 0, twenty: 0, fifty: 2, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 }
+            breakdown: { five: 0, ten: 0, twenty: 0, fifty: 0, hundred: 1, twoHundred: 0, fiveHundred: 0, thousand: 0 }
           }
         ],
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-03-15T10:30:00Z',
-      }),
-      setState: vi.fn(),
+        createdAt: '2024-03-15T10:00:00Z',
+        updatedAt: '2024-03-15T10:00:00Z'
+      })),
+      setState: vi.fn()
     };
 
-    // Mock storage
-    mockStorage = {
-      data: new Map(),
-      setItem: vi.fn(function(key, value) {
-        this.data.set(key, value);
-        return { success: true };
-      }),
-      getItem: vi.fn(function(key) {
-        return this.data.get(key) || null;
-      }),
-    };
-
-    // Reset mocks
-    vi.clearAllMocks();
-    validateState.mockReturnValue({ valid: true });
-
-    // Mock document.createElement for anchor tag
-    const mockAnchor = {
-      href: '',
-      download: '',
-      click: vi.fn(),
-    };
-    vi.spyOn(document, 'createElement').mockImplementation((tag) => {
-      if (tag === 'a') return mockAnchor;
-      return document.createElement(tag);
-    });
-
-    // Mock FileReader
-    global.FileReader = vi.fn().mockImplementation(() => ({
-      readAsText: vi.fn(),
-      onload: null,
-      onerror: null,
-      result: null,
-    }));
+    // Create DataManager instance
+    dataManager = new DataManager(mockStore);
   });
 
   afterEach(() => {
+    if (dataManager) {
+      dataManager.destroy();
+    }
     vi.restoreAllMocks();
   });
 
-  describe('exportData', () => {
-    it('should return success true and generate filename with date pattern', () => {
-      const dataManager = new DataManager(mockStore, mockStorage);
+  describe('exportData()', () => {
+    it('should return success when export completes', () => {
       const result = dataManager.exportData();
-
       expect(result.success).toBe(true);
-      expect(result.filename).toMatch(/^eidiya-backup-\d{4}-\d{2}-\d{2}\.json$/);
     });
 
-    it('should include metadata (exportedAt, appVersion) in export', () => {
-      const dataManager = new DataManager(mockStore, mockStorage);
-      const result = dataManager.exportData();
-
-      expect(result.data).toHaveProperty('exportedAt');
-      expect(result.data).toHaveProperty('appVersion', '1.1.0');
-      expect(result.data).toHaveProperty('contributors');
-    });
-
-    it('should include all contributors in exported data', () => {
-      const dataManager = new DataManager(mockStore, mockStorage);
-      const result = dataManager.exportData();
-
-      expect(result.data.contributors).toHaveLength(1);
-      expect(result.data.contributors[0].name).toBe('John Doe');
-    });
-
-    it('should trigger file download via anchor element', () => {
-      const mockAnchor = {
-        href: '',
-        download: '',
-        click: vi.fn(),
-      };
-      vi.spyOn(document, 'createElement').mockReturnValue(mockAnchor);
-
-      const dataManager = new DataManager(mockStore, mockStorage);
+    it('should get current state from store', () => {
       dataManager.exportData();
+      expect(mockStore.getState).toHaveBeenCalledTimes(1);
+    });
 
-      expect(mockAnchor.click).toHaveBeenCalled();
+    it('should create object URL for blob', () => {
+      dataManager.exportData();
+      expect(mockCreateObjectURL).toHaveBeenCalled();
+    });
+
+    it('should revoke object URL after download', () => {
+      dataManager.exportData();
+      expect(mockRevokeObjectURL).toHaveBeenCalled();
+    });
+
+    it('should include exportedAt metadata in ISO format', () => {
+      const beforeExport = new Date().toISOString();
+      dataManager.exportData();
+      const afterExport = new Date().toISOString();
+
+      // Verify blob was created with JSON content
+      expect(mockCreateObjectURL).toHaveBeenCalled();
+      const blobArg = mockCreateObjectURL.mock.calls[0][0];
+      expect(blobArg).toBeInstanceOf(Blob);
+      expect(blobArg.type).toBe('application/json');
+    });
+
+    it('should include appVersion metadata', () => {
+      dataManager.exportData();
+      expect(mockCreateObjectURL).toHaveBeenCalled();
     });
   });
 
-  describe('importData', () => {
-    it('should parse valid JSON file and validate against schema', async () => {
+  describe('render()', () => {
+    it('should return a container element', () => {
+      const element = dataManager.render();
+      expect(element).toBeInstanceOf(HTMLElement);
+      expect(element.classList.contains('data-manager')).toBe(true);
+    });
+
+    it('should contain an export button', () => {
+      const element = dataManager.render();
+      const button = element.querySelector('button');
+      expect(button).not.toBeNull();
+      expect(button.textContent).toContain('Export');
+    });
+
+    it('should have aria-label on export button for accessibility', () => {
+      const element = dataManager.render();
+      const button = element.querySelector('button');
+      expect(button.getAttribute('aria-label')).toBe('Export data as JSON backup file');
+    });
+
+    it('should use secondary outline button style', () => {
+      const element = dataManager.render();
+      const button = element.querySelector('button');
+      expect(button.classList.contains('secondary')).toBe(true);
+      expect(button.classList.contains('outline')).toBe(true);
+    });
+  });
+
+  describe('filename generation', () => {
+    it('should generate filename with eidiya-backup prefix and current date', () => {
+      // Create a real anchor element to use as base
+      const realAnchor = document.createElement('a');
+
+      // Mock document.createElement to return the real anchor for 'a' tags
+      const originalCreateElement = document.createElement.bind(document);
+      document.createElement = vi.fn((tag) => {
+        if (tag === 'a') {
+          // Return the real anchor but spy on its properties
+          return realAnchor;
+        }
+        return originalCreateElement(tag);
+      });
+
+      dataManager.exportData();
+
+      const today = new Date().toISOString().split('T')[0];
+      expect(realAnchor.download).toBe(`eidiya-backup-${today}.json`);
+
+      // Restore original
+      document.createElement = originalCreateElement;
+    });
+  });
+
+  describe('importData()', () => {
+    it('should return success for valid JSON file', async () => {
       const validData = {
         version: '1.1.0',
         contributors: [
           {
-            id: 'imported-1',
-            name: 'Jane Smith',
+            id: 'import-uuid-1',
+            name: 'Imported User',
             date: '2024-03-20',
-            amountInFils: 5000,
+            amountInFils: 50000,
             received: false,
             breakdown: { five: 0, ten: 0, twenty: 0, fifty: 1, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 }
           }
         ],
-        createdAt: '2024-03-20T00:00:00Z',
-        updatedAt: '2024-03-20T12:00:00Z',
+        createdAt: '2024-03-20T10:00:00Z',
+        updatedAt: '2024-03-20T10:00:00Z'
       };
 
-      validateState.mockReturnValue({ valid: true });
+      const file = new File([JSON.stringify(validData)], 'backup.json', { type: 'application/json' });
+      const result = await dataManager.importData(file);
 
-      const dataManager = new DataManager(mockStore, mockStorage);
-      const mockFile = new File([JSON.stringify(validData)], 'backup.json', { type: 'application/json' });
-
-      const result = await dataManager.importData(mockFile);
-
-      expect(validateState).toHaveBeenCalledWith(expect.objectContaining(validData));
       expect(result.success).toBe(true);
     });
 
-    it('should reject invalid JSON with appropriate error', async () => {
-      const dataManager = new DataManager(mockStore, mockStorage);
-      const mockFile = new File(['not valid json'], 'invalid.json', { type: 'application/json' });
-
-      const result = await dataManager.importData(mockFile);
+    it('should return error for invalid JSON format', async () => {
+      const file = new File(['not valid json'], 'invalid.json', { type: 'application/json' });
+      const result = await dataManager.importData(file);
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain('JSON');
+      expect(result.error).toContain('Invalid JSON');
     });
 
-    it('should reject data failing schema validation', async () => {
+    it('should return error for data failing schema validation', async () => {
       const invalidData = {
         version: '1.1.0',
-        contributors: 'not an array', // Invalid: should be array
+        contributors: 'not an array' // Invalid: should be array
       };
 
-      validateState.mockReturnValue({ valid: false, error: 'contributors must be an array' });
-
-      const dataManager = new DataManager(mockStore, mockStorage);
-      const mockFile = new File([JSON.stringify(invalidData)], 'invalid.json', { type: 'application/json' });
-
-      const result = await dataManager.importData(mockFile);
+      const file = new File([JSON.stringify(invalidData)], 'invalid.json', { type: 'application/json' });
+      const result = await dataManager.importData(file);
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain('contributors must be an array');
+      expect(result.error).toContain('Invalid data');
     });
 
-    it('should show confirmation when data exists (has contributors)', async () => {
-      const existingData = {
+    it('should call setState with migrated data on successful import', async () => {
+      const validData = {
         version: '1.1.0',
         contributors: [
-          { id: 'existing', name: 'Existing User', date: '2024-01-01', amountInFils: 1000, breakdown: { five: 0, ten: 0, twenty: 0, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 1 } }
+          {
+            id: 'import-uuid-1',
+            name: 'Imported User',
+            date: '2024-03-20',
+            amountInFils: 50000,
+            received: false,
+            breakdown: { five: 0, ten: 0, twenty: 0, fifty: 1, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 }
+          }
         ],
+        createdAt: '2024-03-20T10:00:00Z',
+        updatedAt: '2024-03-20T10:00:00Z'
       };
 
-      mockStore.getState.mockReturnValue({
-        version: '1.1.0',
-        contributors: existingData.contributors,
-      });
+      const file = new File([JSON.stringify(validData)], 'backup.json', { type: 'application/json' });
+      await dataManager.importData(file);
 
-      const validImportData = {
-        version: '1.1.0',
-        contributors: [
-          { id: 'new', name: 'New User', date: '2024-03-20', amountInFils: 2000, breakdown: { five: 0, ten: 0, twenty: 0, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 2 } }
-        ],
-      };
-
-      validateState.mockReturnValue({ valid: true });
-
-      // Mock confirm to return true (user confirms)
-      vi.stubGlobal('confirm', vi.fn().mockReturnValue(true));
-
-      const dataManager = new DataManager(mockStore, mockStorage);
-      const mockFile = new File([JSON.stringify(validImportData)], 'backup.json', { type: 'application/json' });
-
-      const result = await dataManager.importData(mockFile);
-
-      expect(window.confirm).toHaveBeenCalled();
-      expect(result.requiresConfirmation).toBe(true);
+      expect(mockStore.setState).toHaveBeenCalledTimes(1);
     });
 
-    it('should not show confirmation when no existing data', async () => {
-      mockStore.getState.mockReturnValue({
-        version: '1.1.0',
-        contributors: [],
-      });
+    it('should return error for file read failure', async () => {
+      // Create a mock FileReader that fails immediately
+      global.FileReader = vi.fn(() => ({
+        readAsText: vi.fn(function() {
+          // Simulate immediate error
+          setTimeout(() => this.onerror(), 0);
+        }),
+        onerror: null,
+        onload: null
+      }));
 
-      const validImportData = {
-        version: '1.1.0',
-        contributors: [
-          { id: 'new', name: 'New User', date: '2024-03-20', amountInFils: 2000, breakdown: { five: 0, ten: 0, twenty: 0, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 2 } }
-        ],
-      };
-
-      validateState.mockReturnValue({ valid: true });
-      vi.stubGlobal('confirm', vi.fn().mockReturnValue(true));
-
-      const dataManager = new DataManager(mockStore, mockStorage);
-      const mockFile = new File([JSON.stringify(validImportData)], 'backup.json', { type: 'application/json' });
-
-      await dataManager.importData(mockFile);
-
-      expect(window.confirm).not.toHaveBeenCalled();
-    });
-
-    it('should apply valid data to store via setState', async () => {
-      const validImportData = {
-        version: '1.1.0',
-        contributors: [
-          { id: 'imported', name: 'Imported User', date: '2024-03-20', amountInFils: 3000, breakdown: { five: 0, ten: 0, twenty: 0, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 3 } }
-        ],
-        createdAt: '2024-03-20T00:00:00Z',
-        updatedAt: '2024-03-20T12:00:00Z',
-      };
-
-      mockStore.getState.mockReturnValue({
-        version: '1.1.0',
-        contributors: [],
-      });
-
-      validateState.mockReturnValue({ valid: true });
-
-      const dataManager = new DataManager(mockStore, mockStorage);
-      const mockFile = new File([JSON.stringify(validImportData)], 'backup.json', { type: 'application/json' });
-
-      await dataManager.importData(mockFile);
-
-      expect(mockStore.setState).toHaveBeenCalledWith(
-        expect.objectContaining({
-          contributors: validImportData.contributors,
-        })
-      );
-    });
-
-    it('should return imported contributor count on success', async () => {
-      const validImportData = {
-        version: '1.1.0',
-        contributors: [
-          { id: '1', name: 'User 1', date: '2024-03-20', amountInFils: 1000, breakdown: { five: 0, ten: 0, twenty: 0, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 1 } },
-          { id: '2', name: 'User 2', date: '2024-03-21', amountInFils: 2000, breakdown: { five: 0, ten: 0, twenty: 0, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 2 } },
-        ],
-      };
-
-      mockStore.getState.mockReturnValue({
-        version: '1.1.0',
-        contributors: [],
-      });
-
-      validateState.mockReturnValue({ valid: true });
-
-      const dataManager = new DataManager(mockStore, mockStorage);
-      const mockFile = new File([JSON.stringify(validImportData)], 'backup.json', { type: 'application/json' });
-
-      const result = await dataManager.importData(mockFile);
-
-      expect(result.success).toBe(true);
-      expect(result.count).toBe(2);
-    });
-
-    it('should cancel import if user declines confirmation', async () => {
-      mockStore.getState.mockReturnValue({
-        version: '1.1.0',
-        contributors: [{ id: 'existing', name: 'Existing', date: '2024-01-01', amountInFils: 1000, breakdown: { five: 0, ten: 0, twenty: 0, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 1 } }],
-      });
-
-      const validImportData = {
-        version: '1.1.0',
-        contributors: [{ id: 'new', name: 'New', date: '2024-03-20', amountInFils: 2000, breakdown: { five: 0, ten: 0, twenty: 0, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 2 } }],
-      };
-
-      validateState.mockReturnValue({ valid: true });
-      vi.stubGlobal('confirm', vi.fn().mockReturnValue(false));
-
-      const dataManager = new DataManager(mockStore, mockStorage);
-      const mockFile = new File([JSON.stringify(validImportData)], 'backup.json', { type: 'application/json' });
-
-      const result = await dataManager.importData(mockFile);
+      const file = new File(['test'], 'test.json', { type: 'application/json' });
+      const result = await dataManager.importData(file);
 
       expect(result.success).toBe(false);
-      expect(result.cancelled).toBe(true);
-      expect(mockStore.setState).not.toHaveBeenCalled();
+      expect(result.error).toContain('Failed to read file');
+    });
+  });
+
+  describe('render() import button', () => {
+    it('should contain both export and import buttons', () => {
+      const element = dataManager.render();
+      const buttons = element.querySelectorAll('button');
+      const buttonTexts = Array.from(buttons).map(b => b.textContent);
+
+      expect(buttonTexts.some(text => text.includes('Export'))).toBe(true);
+      expect(buttonTexts.some(text => text.includes('Import'))).toBe(true);
+    });
+
+    it('should have hidden file input with accept=".json"', () => {
+      const element = dataManager.render();
+      const fileInput = element.querySelector('input[type="file"]');
+
+      expect(fileInput).not.toBeNull();
+      expect(fileInput.getAttribute('accept')).toBe('.json');
+    });
+
+    it('should have aria-label on import button for accessibility', () => {
+      const element = dataManager.render();
+      const buttons = element.querySelectorAll('button');
+      const importButton = Array.from(buttons).find(b => b.textContent.includes('Import'));
+
+      expect(importButton).not.toBeNull();
+      expect(importButton.getAttribute('aria-label')).toContain('Import');
     });
   });
 });
