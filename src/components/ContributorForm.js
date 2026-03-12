@@ -8,9 +8,16 @@ import { validateContributorForm } from '@modules/validation/contributor.js';
 export class ContributorForm {
   /**
    * @param {Function} onSubmit - Callback(contributorData) => void
+   * @param {Object} options - Optional configuration
+   * @param {boolean} options.initiallyCollapsed - Start with form collapsed
+   * @param {boolean} options.hasContributors - Whether contributors exist (enables toggle)
+   * @param {Function} options.onToggle - Callback(collapsed) => void when toggle clicked
    */
-  constructor(onSubmit) {
+  constructor(onSubmit, options = {}) {
     this._onSubmit = onSubmit;
+    this._isCollapsed = options.initiallyCollapsed || false;
+    this._hasContributors = options.hasContributors || false;
+    this._onToggle = options.onToggle || null;
     this._element = null;
     this._errorElements = new Map();
     this._resetValues();
@@ -43,6 +50,24 @@ export class ContributorForm {
    * @returns {HTMLElement}
    */
   render() {
+    const container = document.createElement('div');
+    container.className = 'form-section';
+
+    // Show toggle button when contributors exist
+    if (this._hasContributors) {
+      const toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'form-toggle outline';
+      toggle.textContent = this._isCollapsed ? 'Show Add Contributor Form' : 'Hide Form';
+      toggle.addEventListener('click', () => this._toggle());
+      container.appendChild(toggle);
+
+      if (this._isCollapsed) {
+        this._element = container;
+        return this._element;
+      }
+    }
+
     this._element = document.createElement('article');
     this._element.className = 'form-card';
 
@@ -110,7 +135,8 @@ export class ContributorForm {
 
     this._attachListeners();
 
-    return this._element;
+    container.appendChild(this._element);
+    return container;
   }
 
   /**
@@ -456,6 +482,32 @@ export class ContributorForm {
       if (input) {
         input.value = this._values.breakdown[key];
       }
+    }
+  }
+
+  /**
+   * Toggle form collapsed state
+   * @private
+   */
+  _toggle() {
+    this._isCollapsed = !this._isCollapsed;
+    if (this._onToggle) {
+      this._onToggle(this._isCollapsed);
+    }
+  }
+
+  /**
+   * Update form options (for external state changes)
+   * @param {Object} options
+   * @param {boolean} options.hasContributors - Whether contributors exist
+   * @param {boolean} options.isCollapsed - Whether form should be collapsed
+   */
+  update(options) {
+    if (options.hasContributors !== undefined) {
+      this._hasContributors = options.hasContributors;
+    }
+    if (options.isCollapsed !== undefined) {
+      this._isCollapsed = options.isCollapsed;
     }
   }
 }
