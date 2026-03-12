@@ -365,4 +365,113 @@ describe('Store', () => {
       expect(state2.contributors).toHaveLength(1);
     });
   });
+
+  describe('addContributor', () => {
+    beforeEach(() => {
+      store = new Store(DEFAULT_STATE, storage);
+      // Mock crypto.randomUUID
+      vi.stubGlobal('crypto', {
+        randomUUID: vi.fn().mockReturnValue('test-uuid-123'),
+      });
+    });
+
+    it('should create contributor with UUID id', () => {
+      const contributor = store.addContributor({
+        name: 'John Doe',
+        date: '2024-03-15',
+        amountInFils: 10000,
+        breakdown: { five: 0, ten: 0, twenty: 0, fifty: 2, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 },
+      });
+
+      expect(contributor.id).toBe('test-uuid-123');
+    });
+
+    it('should add contributor to state.contributors array', () => {
+      store.addContributor({
+        name: 'John Doe',
+        date: '2024-03-15',
+        amountInFils: 10000,
+        breakdown: { five: 0, ten: 0, twenty: 0, fifty: 2, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 },
+      });
+
+      expect(store.getState().contributors).toHaveLength(1);
+      expect(store.getState().contributors[0].name).toBe('John Doe');
+    });
+
+    it('should preserve existing contributors', () => {
+      store.setState({
+        contributors: [{ id: 'existing', name: 'Existing', date: '2024-01-01', amountInFils: 5000, breakdown: { five: 0, ten: 0, twenty: 0, fifty: 1, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 } }],
+      });
+
+      store.addContributor({
+        name: 'New Contributor',
+        date: '2024-03-15',
+        amountInFils: 10000,
+        breakdown: { five: 0, ten: 0, twenty: 0, fifty: 2, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 },
+      });
+
+      expect(store.getState().contributors).toHaveLength(2);
+      expect(store.getState().contributors[0].name).toBe('Existing');
+      expect(store.getState().contributors[1].name).toBe('New Contributor');
+    });
+
+    it('should notify subscribers', () => {
+      const listener = vi.fn();
+      store.subscribe(listener);
+
+      store.addContributor({
+        name: 'John Doe',
+        date: '2024-03-15',
+        amountInFils: 10000,
+        breakdown: { five: 0, ten: 0, twenty: 0, fifty: 2, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 },
+      });
+
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    it('should persist to storage', () => {
+      store.addContributor({
+        name: 'John Doe',
+        date: '2024-03-15',
+        amountInFils: 10000,
+        breakdown: { five: 0, ten: 0, twenty: 0, fifty: 2, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 },
+      });
+
+      const persisted = storage.getItem('eidiya:state');
+      expect(persisted.contributors).toHaveLength(1);
+      expect(persisted.contributors[0].name).toBe('John Doe');
+    });
+
+    it('should trim name and copy breakdown', () => {
+      const originalBreakdown = { five: 0, ten: 0, twenty: 0, fifty: 2, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 };
+
+      const contributor = store.addContributor({
+        name: '  John Doe  ',
+        date: '2024-03-15',
+        amountInFils: 10000,
+        breakdown: originalBreakdown,
+      });
+
+      expect(contributor.name).toBe('John Doe');
+      expect(contributor.breakdown).toEqual(originalBreakdown);
+      expect(contributor.breakdown).not.toBe(originalBreakdown); // Should be a copy
+    });
+
+    it('should return the created contributor object', () => {
+      const contributor = store.addContributor({
+        name: 'John Doe',
+        date: '2024-03-15',
+        amountInFils: 10000,
+        breakdown: { five: 0, ten: 0, twenty: 0, fifty: 2, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 },
+      });
+
+      expect(contributor).toEqual({
+        id: 'test-uuid-123',
+        name: 'John Doe',
+        date: '2024-03-15',
+        amountInFils: 10000,
+        breakdown: { five: 0, ten: 0, twenty: 0, fifty: 2, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 },
+      });
+    });
+  });
 });

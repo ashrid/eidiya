@@ -40,7 +40,7 @@
 Plans:
 - [x] 01-PLAN.md - Data Layer & Money Math (Wave 1) - Money class, SafeStorage, unit tests
 - [x] 02-PLAN.md - Persistence & State Management (Wave 2) - Store, schema, formatters
-- [ ] 03-PLAN.md - UI Foundation & Formatting (Wave 3) - Pico CSS, responsive layout, app shell
+- [x] 03-PLAN.md - UI Foundation & Formatting (Wave 3) - Pico CSS, responsive layout, app shell
 
 ---
 
@@ -63,7 +63,7 @@ Plans:
 **Plans:** 3 plans in 3 waves
 
 Plans:
-- [ ] 02-01-PLAN.md — Denomination Validation (Wave 0) - Validation utilities and unit tests for VAL-01
+- [x] 02-01-PLAN.md — Denomination Validation (Wave 0) - Validation utilities and unit tests for VAL-01
 - [ ] 02-02-PLAN.md — Contributor Form Component (Wave 1) - Form with real-time validation for CONT-01, CONT-02, VAL-02
 - [ ] 02-03-PLAN.md — Form Integration & List Display (Wave 2) - Integrate form, enhance list for CONT-05
 
@@ -131,8 +131,8 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 2/3 | Complete    | 2026-03-11 |
-| 2. Data Entry | 0/3 | Planned     | - |
+| 1. Foundation | 3/3 | Complete    | 2026-03-11 |
+| 2. Data Entry | 1/3 | In Progress | 2026-03-12 |
 | 3. Display & Edit | 0/2 | Not started | - |
 | 4. Distribution | 0/2 | Not started | - |
 | 5. Data Management | 0/2 | Not started | - |
@@ -148,7 +148,7 @@ Plans:
 | CONT-03 | Phase 3 | Pending |
 | CONT-04 | Phase 3 | Pending |
 | CONT-05 | Phase 2 | Pending |
-| VAL-01 | Phase 2 | Pending |
+| VAL-01 | Phase 2 | Complete |
 | VAL-02 | Phase 2 | Pending |
 | VAL-03 | Phase 1 | Complete |
 | SUM-01 | Phase 3 | Pending |

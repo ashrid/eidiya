@@ -117,4 +117,29 @@ export class Store {
     // Notify subscribers of loaded state
     this._notify(prevState);
   }
+
+  /**
+   * Add a new contributor to the state
+   * @param {Object} contributorData - Contributor data
+   * @param {string} contributorData.name - Contributor name
+   * @param {string} contributorData.date - ISO date string
+   * @param {number} contributorData.amountInFils - Amount in integer fils
+   * @param {Object} contributorData.breakdown - Denomination breakdown
+   * @returns {Object} The created contributor object
+   */
+  addContributor(contributorData) {
+    const contributor = {
+      id: crypto.randomUUID(),
+      name: contributorData.name.trim(),
+      date: contributorData.date,
+      amountInFils: contributorData.amountInFils,
+      breakdown: { ...contributorData.breakdown },
+    };
+
+    this.setState(state => ({
+      contributors: [...state.contributors, contributor],
+    }));
+
+    return contributor;
+  }
 }
