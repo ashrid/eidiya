@@ -3,7 +3,12 @@
  * @vitest-environment jsdom
  */
 import { describe, it, expect } from 'vitest';
-import { calculateBankNotes, calculateSummary } from './selectors.js';
+import {
+  calculateBankNotes,
+  calculateSummary,
+  calculateRemainingNotes,
+  calculateDistributionProgress,
+} from './selectors.js';
 
 describe('calculateBankNotes', () => {
   it('should return all zero counts for empty array', () => {
@@ -267,5 +272,249 @@ describe('calculateSummary', () => {
 
     expect(result.grandTotalFils).toBe(0);
     expect(result.totalNotes).toBe(1);
+  });
+});
+
+describe('calculateRemainingNotes', () => {
+  it('should return zeroed object for empty array', () => {
+    const result = calculateRemainingNotes([]);
+
+    expect(result).toEqual({
+      five: 0,
+      ten: 0,
+      twenty: 0,
+      fifty: 0,
+      hundred: 0,
+      twoHundred: 0,
+      fiveHundred: 0,
+      thousand: 0,
+    });
+  });
+
+  it('should return zeroed object for null/undefined input', () => {
+    expect(calculateRemainingNotes(null)).toEqual({
+      five: 0,
+      ten: 0,
+      twenty: 0,
+      fifty: 0,
+      hundred: 0,
+      twoHundred: 0,
+      fiveHundred: 0,
+      thousand: 0,
+    });
+
+    expect(calculateRemainingNotes(undefined)).toEqual({
+      five: 0,
+      ten: 0,
+      twenty: 0,
+      fifty: 0,
+      hundred: 0,
+      twoHundred: 0,
+      fiveHundred: 0,
+      thousand: 0,
+    });
+  });
+
+  it('should sum only unreceived contributors', () => {
+    const contributors = [
+      {
+        id: '1',
+        name: 'Alice',
+        received: false,
+        breakdown: { five: 2, ten: 1, twenty: 0, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 },
+      },
+      {
+        id: '2',
+        name: 'Bob',
+        received: undefined,
+        breakdown: { five: 1, ten: 0, twenty: 1, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 },
+      },
+    ];
+
+    const result = calculateRemainingNotes(contributors);
+
+    expect(result.five).toBe(3);
+    expect(result.ten).toBe(1);
+    expect(result.twenty).toBe(1);
+  });
+
+  it('should exclude received contributors from totals', () => {
+    const contributors = [
+      {
+        id: '1',
+        name: 'Alice',
+        received: true,
+        breakdown: { five: 2, ten: 1, twenty: 0, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 },
+      },
+      {
+        id: '2',
+        name: 'Bob',
+        received: false,
+        breakdown: { five: 1, ten: 0, twenty: 1, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 },
+      },
+    ];
+
+    const result = calculateRemainingNotes(contributors);
+
+    // Alice is received, so only Bob's notes count
+    expect(result.five).toBe(1);
+    expect(result.ten).toBe(0);
+    expect(result.twenty).toBe(1);
+  });
+
+  it('should handle missing breakdown fields gracefully', () => {
+    const contributors = [
+      {
+        id: '1',
+        name: 'Test',
+        received: false,
+        breakdown: { five: 1 },
+      },
+    ];
+
+    const result = calculateRemainingNotes(contributors);
+
+    expect(result.five).toBe(1);
+    expect(result.ten).toBe(0);
+  });
+
+  it('should handle missing breakdown object', () => {
+    const contributors = [
+      {
+        id: '1',
+        name: 'Test',
+        received: false,
+      },
+    ];
+
+    const result = calculateRemainingNotes(contributors);
+
+    expect(result).toEqual({
+      five: 0,
+      ten: 0,
+      twenty: 0,
+      fifty: 0,
+      hundred: 0,
+      twoHundred: 0,
+      fiveHundred: 0,
+      thousand: 0,
+    });
+  });
+
+  it('should handle all received contributors', () => {
+    const contributors = [
+      {
+        id: '1',
+        name: 'Alice',
+        received: true,
+        breakdown: { five: 2, ten: 1, twenty: 0, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 },
+      },
+      {
+        id: '2',
+        name: 'Bob',
+        received: true,
+        breakdown: { five: 1, ten: 0, twenty: 1, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 },
+      },
+    ];
+
+    const result = calculateRemainingNotes(contributors);
+
+    expect(result).toEqual({
+      five: 0,
+      ten: 0,
+      twenty: 0,
+      fifty: 0,
+      hundred: 0,
+      twoHundred: 0,
+      fiveHundred: 0,
+      thousand: 0,
+    });
+  });
+});
+
+describe('calculateDistributionProgress', () => {
+  it('should return zeros for empty input', () => {
+    const result = calculateDistributionProgress([]);
+
+    expect(result.total).toBe(0);
+    expect(result.received).toBe(0);
+    expect(result.remaining).toBe(0);
+    expect(result.percentComplete).toBe(0);
+  });
+
+  it('should return zeros for null/undefined input', () => {
+    const result = calculateDistributionProgress(null);
+
+    expect(result.total).toBe(0);
+    expect(result.received).toBe(0);
+    expect(result.remaining).toBe(0);
+    expect(result.percentComplete).toBe(0);
+  });
+
+  it('should calculate total, received, remaining, percentComplete correctly', () => {
+    const contributors = [
+      { id: '1', name: 'Alice', received: true },
+      { id: '2', name: 'Bob', received: false },
+      { id: '3', name: 'Charlie', received: false },
+    ];
+
+    const result = calculateDistributionProgress(contributors);
+
+    expect(result.total).toBe(3);
+    expect(result.received).toBe(1);
+    expect(result.remaining).toBe(2);
+    expect(result.percentComplete).toBe(33); // 1/3 = 33%
+  });
+
+  it('should handle 0 contributors (avoid division by zero)', () => {
+    const result = calculateDistributionProgress([]);
+
+    expect(result.total).toBe(0);
+    expect(result.received).toBe(0);
+    expect(result.remaining).toBe(0);
+    expect(result.percentComplete).toBe(0);
+  });
+
+  it('should update when contributors marked received', () => {
+    const contributors = [
+      { id: '1', name: 'Alice', received: true },
+      { id: '2', name: 'Bob', received: true },
+      { id: '3', name: 'Charlie', received: false },
+    ];
+
+    const result = calculateDistributionProgress(contributors);
+
+    expect(result.total).toBe(3);
+    expect(result.received).toBe(2);
+    expect(result.remaining).toBe(1);
+    expect(result.percentComplete).toBe(67); // 2/3 = 67%
+  });
+
+  it('should handle all contributors received (100%)', () => {
+    const contributors = [
+      { id: '1', name: 'Alice', received: true },
+      { id: '2', name: 'Bob', received: true },
+    ];
+
+    const result = calculateDistributionProgress(contributors);
+
+    expect(result.total).toBe(2);
+    expect(result.received).toBe(2);
+    expect(result.remaining).toBe(0);
+    expect(result.percentComplete).toBe(100);
+  });
+
+  it('should handle no contributors with received field (0%)', () => {
+    const contributors = [
+      { id: '1', name: 'Alice' },
+      { id: '2', name: 'Bob' },
+    ];
+
+    const result = calculateDistributionProgress(contributors);
+
+    expect(result.total).toBe(2);
+    expect(result.received).toBe(0);
+    expect(result.remaining).toBe(2);
+    expect(result.percentComplete).toBe(0);
   });
 });
