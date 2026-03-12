@@ -669,3 +669,82 @@ fieldset.error legend {
     border: 1px solid var(--pico-muted-border-color);
   }
 }
+
+/* Breakdown Edit Mode */
+.breakdown-edit-mode {
+  background-color: var(--pico-card-background-color);
+  padding: var(--spacing-sm);
+  border-radius: var(--pico-border-radius);
+  margin-top: var(--spacing-xs);
+}
+
+.breakdown-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+@media (max-width: 767px) {
+  .breakdown-edit-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.breakdown-edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.breakdown-edit-field label {
+  font-size: 0.75rem;
+  color: var(--pico-muted-color);
+}
+
+.breakdown-edit-field input {
+  padding: var(--spacing-xs);
+  font-size: 0.875rem;
+  margin-bottom: 0;
+}
+
+.breakdown-remaining {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--pico-border-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.breakdown-remaining.balanced {
+  background-color: var(--pico-color-green-100);
+  color: var(--pico-color-green-700);
+}
+
+.breakdown-remaining.remaining {
+  background-color: var(--pico-color-amber-100);
+  color: var(--pico-color-amber-700);
+}
+
+.breakdown-remaining.excess {
+  background-color: var(--pico-color-red-100);
+  color: var(--pico-color-red-700);
+}
+
+.breakdown-remaining.error {
+  background-color: var(--pico-color-red-100);
+  color: var(--pico-color-red-700);
+}
+
+.breakdown-edit-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+}
+
+.breakdown-edit-buttons button {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: 0.875rem;
+  margin-bottom: 0;
+}

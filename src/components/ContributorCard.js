@@ -28,6 +28,9 @@ export class ContributorCard {
     this._isEditing = false;
     this._statusTimeout = null;
     this._menuOpen = false;
+    // Track breakdown during editing
+    this._editingBreakdown = null;
+    this._editingAmountFils = null;
   }
 
   /**
@@ -209,6 +212,13 @@ export class ContributorCard {
     this._onEditStart(this._contributor.id);
 
     const fieldEl = this._element.querySelector(`[data-field="${field}"]`);
+
+    // Special handling for breakdown - show denomination grid
+    if (field === 'breakdown') {
+      this._enterBreakdownEditMode(fieldEl);
+      return;
+    }
+
     const currentValue = this._getFieldValue(field);
 
     const input = document.createElement('input');
@@ -236,6 +246,216 @@ export class ContributorCard {
 
     // Update card styling
     this._element.classList.add('editing');
+  }
+
+  /**
+   * Enter edit mode for breakdown with denomination grid
+   * @private
+   */
+  _enterBreakdownEditMode(fieldEl) {
+    // Initialize editing state
+    this._editingBreakdown = { ...this._contributor.breakdown };
+    this._editingAmountFils = this._contributor.amountInFils;
+
+    // Clear field and create edit container
+    fieldEl.innerHTML = '';
+    fieldEl.classList.add('breakdown-edit-mode');
+
+    // Create grid container
+    const grid = document.createElement('div');
+    grid.className = 'breakdown-edit-grid';
+
+    // Create inputs for each denomination
+    const denominations = [
+      { key: 'five', label: '5 AED', value: 5 },
+      { key: 'ten', label: '10 AED', value: 10 },
+      { key: 'twenty', label: '20 AED', value: 20 },
+      { key: 'fifty', label: '50 AED', value: 50 },
+      { key: 'hundred', label: '100 AED', value: 100 },
+      { key: 'twoHundred', label: '200 AED', value: 200 },
+      { key: 'fiveHundred', label: '500 AED', value: 500 },
+      { key: 'thousand', label: '1000 AED', value: 1000 },
+    ];
+
+    for (const denom of denominations) {
+      const field = document.createElement('div');
+      field.className = 'breakdown-edit-field';
+
+      const label = document.createElement('label');
+      label.textContent = denom.label;
+      label.htmlFor = `breakdown-${denom.key}-${this._contributor.id}`;
+
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.id = `breakdown-${denom.key}-${this._contributor.id}`;
+      input.min = '0';
+      input.step = '1';
+      input.value = this._editingBreakdown[denom.key] || 0;
+      input.dataset.denomKey = denom.key;
+      input.dataset.denomValue = denom.value;
+
+      // Update remaining indicator on input
+      input.addEventListener('input', () => this._updateBreakdownRemaining());
+
+      field.appendChild(label);
+      field.appendChild(input);
+      grid.appendChild(field);
+    }
+
+    // Create remaining indicator
+    const remainingEl = document.createElement('div');
+    remainingEl.className = 'breakdown-remaining';
+    remainingEl.dataset.remainingIndicator = 'true';
+
+    // Create buttons container
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.className = 'breakdown-edit-buttons';
+
+    const saveBtn = document.createElement('button');
+    saveBtn.type = 'button';
+    saveBtn.className = 'save-breakdown-btn';
+    saveBtn.textContent = 'Save';
+    saveBtn.addEventListener('click', () => this._saveBreakdownEdit());
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.className = 'cancel-breakdown-btn outline';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.addEventListener('click', () => this._cancelBreakdownEdit());
+
+    buttonsContainer.appendChild(saveBtn);
+    buttonsContainer.appendChild(cancelBtn);
+
+    fieldEl.appendChild(grid);
+    fieldEl.appendChild(remainingEl);
+    fieldEl.appendChild(buttonsContainer);
+
+    // Update remaining indicator initially
+    this._updateBreakdownRemaining();
+
+    // Focus first input
+    const firstInput = grid.querySelector('input');
+    if (firstInput) firstInput.focus();
+
+    // Update card styling
+    this._element.classList.add('editing');
+  }
+
+  /**
+   * Update the remaining indicator for breakdown editing
+   * @private
+   */
+  _updateBreakdownRemaining() {
+    const remainingEl = this._element?.querySelector('[data-remaining-indicator]');
+    if (!remainingEl) return;
+
+    // Get current values from inputs
+    const grid = this._element.querySelector('.breakdown-edit-grid');
+    if (!grid) return;
+
+    const inputs = grid.querySelectorAll('input');
+    let totalFils = 0;
+
+    for (const input of inputs) {
+      const count = parseInt(input.value, 10) || 0;
+      const value = parseInt(input.dataset.denomValue, 10) || 0;
+      totalFils += count * value * 100; // Convert to fils
+    }
+
+    const targetFils = this._editingAmountFils;
+    const remainingFils = targetFils - totalFils;
+
+    // Update display
+    const remainingAED = Math.abs(remainingFils) / 100;
+    const formattedRemaining = remainingAED.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+    if (remainingFils === 0) {
+      remainingEl.className = 'breakdown-remaining balanced';
+      remainingEl.textContent = '✓ Breakdown matches total';
+    } else if (remainingFils > 0) {
+      remainingEl.className = 'breakdown-remaining remaining';
+      remainingEl.textContent = `${formattedRemaining} AED remaining to allocate`;
+    } else {
+      remainingEl.className = 'breakdown-remaining excess';
+      remainingEl.textContent = `${formattedRemaining} AED over allocated`;
+    }
+  }
+
+  /**
+   * Save breakdown edit
+   * @private
+   */
+  _saveBreakdownEdit() {
+    // Collect values from inputs
+    const grid = this._element?.querySelector('.breakdown-edit-grid');
+    if (!grid) {
+      this._cancelBreakdownEdit();
+      return;
+    }
+
+    const inputs = grid.querySelectorAll('input');
+    const newBreakdown = {};
+    let totalFils = 0;
+
+    for (const input of inputs) {
+      const key = input.dataset.denomKey;
+      const count = parseInt(input.value, 10) || 0;
+      const value = parseInt(input.dataset.denomValue, 10) || 0;
+      newBreakdown[key] = count;
+      totalFils += count * value * 100;
+    }
+
+    // Validate that breakdown matches amount
+    if (totalFils !== this._editingAmountFils) {
+      this._showBreakdownError(`Breakdown (${formatAED(totalFils)}) doesn't match amount (${formatAED(this._editingAmountFils)})`);
+      return;
+    }
+
+    // Build update
+    const updates = { breakdown: newBreakdown };
+
+    // Update local contributor data
+    this._contributor = { ...this._contributor, ...updates };
+
+    // Clear editing state
+    this._editingBreakdown = null;
+    this._editingAmountFils = null;
+
+    // Show success feedback BEFORE dispatching to store
+    this._showStatus('Saved', 'success');
+
+    // Dispatch to store
+    this._onUpdate(this._contributor.id, updates);
+
+    // Exit edit mode and re-render
+    this._exitEditMode();
+    this._renderField('breakdown');
+  }
+
+  /**
+   * Show breakdown validation error
+   * @private
+   */
+  _showBreakdownError(message) {
+    const remainingEl = this._element?.querySelector('[data-remaining-indicator]');
+    if (remainingEl) {
+      remainingEl.className = 'breakdown-remaining error';
+      remainingEl.textContent = message;
+    }
+  }
+
+  /**
+   * Cancel breakdown edit
+   * @private
+   */
+  _cancelBreakdownEdit() {
+    this._editingBreakdown = null;
+    this._editingAmountFils = null;
+    this._exitEditMode();
+    this._renderField('breakdown');
   }
 
   /**
@@ -335,6 +555,9 @@ export class ContributorCard {
 
     const fieldEl = this._element.querySelector(`[data-field="${field}"]`);
     if (!fieldEl) return;
+
+    // Remove edit mode styling if present
+    fieldEl.classList.remove('breakdown-edit-mode');
 
     switch (field) {
       case 'name':
