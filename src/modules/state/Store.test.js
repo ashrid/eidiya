@@ -474,4 +474,142 @@ describe('Store', () => {
       });
     });
   });
+
+  describe('updateContributor', () => {
+    beforeEach(() => {
+      store = new Store(DEFAULT_STATE, storage);
+      // Add a contributor to update
+      store.setState({
+        contributors: [{
+          id: 'contrib-1',
+          name: 'Original Name',
+          date: '2024-01-01',
+          amountInFils: 5000,
+          breakdown: { five: 0, ten: 0, twenty: 0, fifty: 1, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 }
+        }],
+      });
+    });
+
+    it('should update existing contributor and return updated object', () => {
+      const updated = store.updateContributor('contrib-1', { name: 'Updated Name' });
+
+      expect(updated).not.toBeNull();
+      expect(updated.name).toBe('Updated Name');
+      expect(updated.id).toBe('contrib-1');
+    });
+
+    it('should return null if contributor not found', () => {
+      const updated = store.updateContributor('non-existent', { name: 'New Name' });
+
+      expect(updated).toBeNull();
+    });
+
+    it('should preserve ID and unmodified fields', () => {
+      const updated = store.updateContributor('contrib-1', { name: 'Updated Name' });
+
+      expect(updated.id).toBe('contrib-1');
+      expect(updated.date).toBe('2024-01-01');
+      expect(updated.amountInFils).toBe(5000);
+      expect(updated.breakdown).toEqual({ five: 0, ten: 0, twenty: 0, fifty: 1, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 });
+    });
+
+    it('should trigger setState and notify subscribers', () => {
+      const listener = vi.fn();
+      store.subscribe(listener);
+
+      store.updateContributor('contrib-1', { name: 'Updated Name' });
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      const [newState, prevState] = listener.mock.calls[0];
+      expect(newState.contributors[0].name).toBe('Updated Name');
+      expect(prevState.contributors[0].name).toBe('Original Name');
+    });
+
+    it('should persist updated state to storage', () => {
+      store.updateContributor('contrib-1', { name: 'Updated Name' });
+
+      const persisted = storage.getItem('eidiya:state');
+      expect(persisted.contributors[0].name).toBe('Updated Name');
+    });
+
+    it('should handle multiple field updates', () => {
+      const updated = store.updateContributor('contrib-1', {
+        name: 'New Name',
+        amountInFils: 10000,
+        breakdown: { five: 0, ten: 0, twenty: 0, fifty: 2, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 }
+      });
+
+      expect(updated.name).toBe('New Name');
+      expect(updated.amountInFils).toBe(10000);
+      expect(updated.breakdown.fifty).toBe(2);
+    });
+  });
+
+  describe('deleteContributor', () => {
+    beforeEach(() => {
+      store = new Store(DEFAULT_STATE, storage);
+      // Add contributors to delete
+      store.setState({
+        contributors: [
+          {
+            id: 'contrib-1',
+            name: 'First Contributor',
+            date: '2024-01-01',
+            amountInFils: 5000,
+            breakdown: { five: 0, ten: 0, twenty: 0, fifty: 1, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 }
+          },
+          {
+            id: 'contrib-2',
+            name: 'Second Contributor',
+            date: '2024-01-02',
+            amountInFils: 10000,
+            breakdown: { five: 0, ten: 0, twenty: 0, fifty: 2, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 }
+          }
+        ],
+      });
+    });
+
+    it('should remove contributor and return true', () => {
+      const result = store.deleteContributor('contrib-1');
+
+      expect(result).toBe(true);
+      expect(store.getState().contributors).toHaveLength(1);
+    });
+
+    it('should return false if contributor not found', () => {
+      const result = store.deleteContributor('non-existent');
+
+      expect(result).toBe(false);
+      expect(store.getState().contributors).toHaveLength(2);
+    });
+
+    it('should trigger setState and notify subscribers', () => {
+      const listener = vi.fn();
+      store.subscribe(listener);
+
+      store.deleteContributor('contrib-1');
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      const [newState, prevState] = listener.mock.calls[0];
+      expect(newState.contributors).toHaveLength(1);
+      expect(prevState.contributors).toHaveLength(2);
+    });
+
+    it('should persist updated state to storage', () => {
+      store.deleteContributor('contrib-1');
+
+      const persisted = storage.getItem('eidiya:state');
+      expect(persisted.contributors).toHaveLength(1);
+      expect(persisted.contributors[0].id).toBe('contrib-2');
+    });
+
+    it('should preserve other contributors', () => {
+      store.deleteContributor('contrib-1');
+
+      const contributors = store.getState().contributors;
+      expect(contributors).toHaveLength(1);
+      expect(contributors[0].id).toBe('contrib-2');
+      expect(contributors[0].name).toBe('Second Contributor');
+    });
+  });
 });

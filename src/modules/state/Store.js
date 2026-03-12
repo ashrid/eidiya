@@ -142,4 +142,45 @@ export class Store {
 
     return contributor;
   }
+
+  /**
+   * Update an existing contributor
+   * @param {string} id - Contributor ID
+   * @param {Object} updates - Partial contributor data to update
+   * @returns {Object|null} Updated contributor or null if not found
+   */
+  updateContributor(id, updates) {
+    const state = this.getState();
+    const index = state.contributors.findIndex(c => c.id === id);
+
+    if (index === -1) return null;
+
+    const updated = {
+      ...state.contributors[index],
+      ...updates,
+      id // Preserve ID
+    };
+
+    const newContributors = [...state.contributors];
+    newContributors[index] = updated;
+
+    this.setState({ contributors: newContributors });
+    return updated;
+  }
+
+  /**
+   * Delete a contributor by ID
+   * @param {string} id - Contributor ID
+   * @returns {boolean} True if deleted, false if not found
+   */
+  deleteContributor(id) {
+    const state = this.getState();
+    const index = state.contributors.findIndex(c => c.id === id);
+
+    if (index === -1) return false;
+
+    const newContributors = state.contributors.filter(c => c.id !== id);
+    this.setState({ contributors: newContributors });
+    return true;
+  }
 }
