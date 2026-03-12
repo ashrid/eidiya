@@ -249,6 +249,7 @@ describe('Store', () => {
           name: 'Loaded User',
           date: '2024-01-01',
           amountInFils: 1000,
+          received: false,
           breakdown: { five: 0, ten: 0, twenty: 0, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 1 }
         },
       ]);
@@ -279,7 +280,7 @@ describe('Store', () => {
       store = new Store(DEFAULT_STATE, storage);
       store.load();
 
-      expect(store.getState().version).toBe('1.0.0');
+      expect(store.getState().version).toBe(DEFAULT_STATE.version);
     });
 
     it('should use defaults when storage returns null', () => {
@@ -319,6 +320,7 @@ describe('Store', () => {
           name: 'Test',
           date: '2024-01-01',
           amountInFils: 1000,
+          received: false,
           breakdown: { five: 0, ten: 0, twenty: 0, fifty: 0, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 1 }
         }] }),
         expect.objectContaining({ contributors: [] })
@@ -610,6 +612,103 @@ describe('Store', () => {
       expect(contributors).toHaveLength(1);
       expect(contributors[0].id).toBe('contrib-2');
       expect(contributors[0].name).toBe('Second Contributor');
+    });
+  });
+
+  describe('toggleReceived', () => {
+    beforeEach(() => {
+      store = new Store(DEFAULT_STATE, storage);
+      // Add contributors to toggle
+      store.setState({
+        contributors: [
+          {
+            id: 'contrib-1',
+            name: 'First Contributor',
+            date: '2024-01-01',
+            amountInFils: 5000,
+            received: false,
+            breakdown: { five: 0, ten: 0, twenty: 0, fifty: 1, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 }
+          },
+          {
+            id: 'contrib-2',
+            name: 'Second Contributor',
+            date: '2024-01-02',
+            amountInFils: 10000,
+            received: true,
+            breakdown: { five: 0, ten: 0, twenty: 0, fifty: 2, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 }
+          },
+          {
+            id: 'contrib-3',
+            name: 'Third Contributor',
+            date: '2024-01-03',
+            amountInFils: 15000,
+            breakdown: { five: 0, ten: 0, twenty: 0, fifty: 3, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 }
+          }
+        ],
+      });
+    });
+
+    it('should toggle received from false to true', () => {
+      const updated = store.toggleReceived('contrib-1');
+
+      expect(updated.received).toBe(true);
+      expect(store.getState().contributors[0].received).toBe(true);
+    });
+
+    it('should toggle received from true to false', () => {
+      const updated = store.toggleReceived('contrib-2');
+
+      expect(updated.received).toBe(false);
+      expect(store.getState().contributors[1].received).toBe(false);
+    });
+
+    it('should toggle undefined received to true', () => {
+      const updated = store.toggleReceived('contrib-3');
+
+      expect(updated.received).toBe(true);
+      expect(store.getState().contributors[2].received).toBe(true);
+    });
+
+    it('should return null if contributor not found', () => {
+      const updated = store.toggleReceived('non-existent');
+
+      expect(updated).toBeNull();
+    });
+
+    it('should trigger setState and notify subscribers', () => {
+      const listener = vi.fn();
+      store.subscribe(listener);
+
+      store.toggleReceived('contrib-1');
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      const [newState, prevState] = listener.mock.calls[0];
+      expect(newState.contributors[0].received).toBe(true);
+      expect(prevState.contributors[0].received).toBe(false);
+    });
+
+    it('should persist updated state to storage', () => {
+      store.toggleReceived('contrib-1');
+
+      const persisted = storage.getItem('eidiya:state');
+      expect(persisted.contributors[0].received).toBe(true);
+    });
+
+    it('should preserve other contributor fields', () => {
+      const updated = store.toggleReceived('contrib-1');
+
+      expect(updated.name).toBe('First Contributor');
+      expect(updated.date).toBe('2024-01-01');
+      expect(updated.amountInFils).toBe(5000);
+      expect(updated.breakdown).toEqual({ five: 0, ten: 0, twenty: 0, fifty: 1, hundred: 0, twoHundred: 0, fiveHundred: 0, thousand: 0 });
+    });
+
+    it('should preserve other contributors when toggling', () => {
+      store.toggleReceived('contrib-1');
+
+      const contributors = store.getState().contributors;
+      expect(contributors[1].received).toBe(true); // contrib-2 unchanged
+      expect(contributors[2].received).toBeUndefined(); // contrib-3 unchanged
     });
   });
 });

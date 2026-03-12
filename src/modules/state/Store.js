@@ -183,4 +183,16 @@ export class Store {
     this.setState({ contributors: newContributors });
     return true;
   }
+
+  /**
+   * Toggle the received status of a contributor
+   * @param {string} id - Contributor ID
+   * @returns {Object|null} Updated contributor or null if not found
+   */
+  toggleReceived(id) {
+    const state = this.getState();
+    const contributor = state.contributors.find(c => c.id === id);
+    if (!contributor) return null;
+    return this.updateContributor(id, { received: !contributor.received });
+  }
 }
