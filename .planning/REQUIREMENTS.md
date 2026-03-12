@@ -39,14 +39,14 @@
 - [x] **PERS-02**: System loads data from localStorage on app start
 - [x] **PERS-03**: System handles localStorage errors gracefully (quota exceeded, private mode)
 - [x] **PERS-04**: User can export data as JSON file
-- [ ] **PERS-05**: User can import data from JSON file
+- [x] **PERS-05**: User can import data from JSON file
 
 ### UI/UX (UX)
 
 - [x] **UX-01**: App is responsive and works on mobile devices
 - [x] **UX-02**: App uses AED currency formatting throughout
 - [x] **UX-03**: App provides clear visual feedback for all actions
-- [ ] **UX-04**: App supports both light and dark modes
+- [x] **UX-04**: App supports both light and dark modes
 
 ---
 
@@ -101,11 +101,11 @@
 | PERS-02 | Phase 1 | Complete |
 | PERS-03 | Phase 1 | Complete |
 | PERS-04 | Phase 5 | Complete |
-| PERS-05 | Phase 5 | Pending |
+| PERS-05 | Phase 5 | Complete |
 | UX-01 | Phase 1 | Complete |
 | UX-02 | Phase 1 | Complete |
 | UX-03 | Phase 3 | Complete |
-| UX-04 | Phase 5 | Pending |
+| UX-04 | Phase 5 | Complete |
 
 **Coverage:**
 - v1 requirements: 22 total
