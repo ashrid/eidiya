@@ -95,6 +95,9 @@ Each task was committed atomically:
 5. **Fix denomination field error handling and status badge timing** - `40db134` (fix)
    - Fixed `_createDenominationField` element structure
    - Fixed status badge timing in `_saveEdit`
+6. **Fix card element null errors and form toggle state** - `40fe3ba` (fix)
+   - Added null guards for destroyed card elements
+   - Fixed form collapsed state persistence across re-renders
 
 ## Files Created/Modified
 
@@ -104,7 +107,8 @@ Each task was committed atomically:
 - `src/components/DeleteConfirmation.test.js` - 18 tests for modal behavior
 - `src/components/ContributorCard.js` - Card with inline editing capabilities
 - `src/components/ContributorCard.test.js` - 26 tests for editing and interactions
-- `src/components/AppContainer.js` - Integrated new components with dimming support
+- `src/components/AppContainer.js` - Integrated new components with dimming support, form toggle state tracking
+- `src/components/ContributorCard.js` - Card with inline editing capabilities, null guards for destroyed elements
 - `src/styles/main.css` - Added styles for editing, menus, badges, and dialogs
 - `src/test-setup.js` - Mock for HTMLDialogElement in tests
 - `vite.config.js` - Added test setup file configuration
@@ -127,6 +131,8 @@ None - plan executed exactly as written.
 2. **Status badge tests timing**: Adjusted tests to use real timers with small delays instead of fake timers for blur event handling
 3. **Bug: Denomination field error handling** (post-implementation): `_createDenominationField` stored elements as `{ input, group }` but `_clearFieldError` expected `{ input, error }`. Fixed by using `{ input, error: null }` and adding null check in `_clearFieldError`.
 4. **Bug: Status badge not showing on edit** (post-implementation): `_showStatus` was called after store dispatch, but store notification triggers re-render which destroys the card. Fixed by showing status BEFORE dispatching to store.
+5. **Bug: "can't access property 'classList', this._element is null"** (post-implementation): Store re-render destroys the card element while `_saveEdit` is still executing. Fixed by adding null guards in `_exitEditMode` and `_renderField`.
+6. **Bug: Form toggle not working** (post-implementation): AppContainer created new form on each render with `initiallyCollapsed: hasContributors`, ignoring user's toggle choice. Fixed by tracking `_isFormCollapsed` state across re-renders.
 
 ## Next Phase Readiness
 
