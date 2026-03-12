@@ -10,7 +10,7 @@
 ## Phases
 
 - [x] **Phase 1: Foundation** - Data layer, persistence, and calculation engine (completed 2026-03-11)
-- [ ] **Phase 2: Data Entry** - Add contributors with denomination breakdown and validation
+- [x] **Phase 2: Data Entry** - Add contributors with denomination breakdown and validation (completed 2026-03-12)
 - [ ] **Phase 3: Display & Edit** - View contributors, totals, and manage entries
 - [ ] **Phase 4: Distribution** - Track receipts and generate printable lists
 - [ ] **Phase 5: Data Management** - Export/import and UI polish
@@ -85,7 +85,11 @@ Plans:
 5. User can delete a contributor with a confirmation prompt
 6. All actions provide clear visual feedback (success/error notifications)
 
-**Plans:** TBD
+**Plans:** 2 plans in 2 waves
+
+Plans:
+- [x] 03-01-PLAN.md — Summary Dashboard (Wave 1) - Aggregate calculations and responsive summary component for SUM-01, SUM-02, SUM-03
+- [ ] 03-02-PLAN.md — Edit & Delete Management (Wave 2) - Store actions, inline editing, delete confirmation for CONT-03, CONT-04, UX-03
 
 ---
 
@@ -133,7 +137,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete    | 2026-03-11 |
 | 2. Data Entry | 3/3 | Complete    | 2026-03-12 |
-| 3. Display & Edit | 0/2 | Not started | - |
+| 3. Display & Edit | 1/2 | In Progress | 2026-03-12 |
 | 4. Distribution | 0/2 | Not started | - |
 | 5. Data Management | 0/2 | Not started | - |
 
@@ -145,15 +149,15 @@ Plans:
 |-------------|-------|--------|
 | CONT-01 | Phase 2 | Complete |
 | CONT-02 | Phase 2 | Complete |
-| CONT-03 | Phase 3 | Pending |
-| CONT-04 | Phase 3 | Pending |
+| CONT-03 | Phase 3 | Planned |
+| CONT-04 | Phase 3 | Planned |
 | CONT-05 | Phase 2 | Complete |
 | VAL-01 | Phase 2 | Complete |
 | VAL-02 | Phase 2 | Complete |
 | VAL-03 | Phase 1 | Complete |
-| SUM-01 | Phase 3 | Pending |
-| SUM-02 | Phase 3 | Pending |
-| SUM-03 | Phase 3 | Pending |
+| SUM-01 | Phase 3 | Complete |
+| SUM-02 | Phase 3 | Complete |
+| SUM-03 | Phase 3 | Complete |
 | DIST-01 | Phase 4 | Pending |
 | DIST-02 | Phase 4 | Pending |
 | DIST-03 | Phase 4 | Pending |
@@ -164,7 +168,7 @@ Plans:
 | PERS-05 | Phase 5 | Pending |
 | UX-01 | Phase 1 | In Progress |
 | UX-02 | Phase 1 | Complete |
-| UX-03 | Phase 3 | Pending |
+| UX-03 | Phase 3 | Planned |
 | UX-04 | Phase 5 | Pending |
 
 **Coverage Summary:**
