@@ -222,6 +222,7 @@ header p {
 
 .denomination-field input {
   margin-bottom: 0;
+  padding-right: 1.5rem; /* Space for spinner buttons */
 }
 
 /* Error styling */
@@ -1071,6 +1072,7 @@ fieldset.error legend {
   padding: var(--spacing-xs);
   font-size: 0.875rem;
   margin-bottom: 0;
+  padding-right: 1.5rem; /* Space for spinner buttons */
 }
 
 .breakdown-remaining {
