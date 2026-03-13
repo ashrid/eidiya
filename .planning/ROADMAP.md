@@ -12,6 +12,7 @@
 - [x] **Phase 1: Foundation** - Data layer, persistence, and calculation engine (completed 2026-03-11)
 - [x] **Phase 2: Data Entry** - Add contributors with denomination breakdown and validation (completed 2026-03-12)
 - [x] **Phase 3: Display & Edit** - View contributors, totals, and manage entries (completed 2026-03-12)
+- [ ] **Phase 3.1: Gap Closure** - Fix UI/UX issues identified in Phase 3 verification
 - [x] **Phase 4: Distribution** - Track receipts and generate printable lists (completed 2026-03-12)
 - [x] **Phase 5: Data Management** - Export/import and UI polish (completed 2026-03-13)
 
@@ -93,6 +94,29 @@ Plans:
 
 ---
 
+### Phase 3.1: Gap Closure
+
+**Goal:** Address UI/UX issues identified during Phase 3 verification
+
+**Depends on:** Phase 3
+
+**Requirements:** UX-03
+
+**Success Criteria** (what must be TRUE):
+1. Edit menu button is visible in both light and dark modes
+2. Name and amount edit modes have explicit Save and Cancel buttons
+3. Status badges appear after edit and delete actions
+4. Denomination input spinners do not overlap value text
+5. Add Contributor form has adequate width for comfortable input
+
+**Plans:** 2 plans in 1 wave (parallel)
+
+Plans:
+- [ ] 03.1-01-PLAN.md — CSS Fixes (Wave 1) - Dark mode button styling, spinner padding, form width
+- [ ] 03.1-02-PLAN.md — Component Fixes (Wave 1) - Save/Cancel buttons, status badge timing
+
+---
+
 ### Phase 4: Distribution
 
 **Goal:** Users can track distribution and generate printable lists for handout
@@ -136,10 +160,10 @@ Plans:
 **Plans:** 4/4 plans complete
 
 Plans:
-- [ ] 05-00-PLAN.md — Test Scaffolding (Wave 0) - DataManager and ThemeManager test scaffolding
-- [ ] 05-01-PLAN.md — Export Functionality (Wave 1) - JSON export with file download for PERS-04
-- [ ] 05-02-PLAN.md — Import Functionality (Wave 2) - JSON import with validation for PERS-05
-- [ ] 05-03-PLAN.md — Dark Mode (Wave 3) - Theme toggle, persistence, and UI for UX-04
+- [x] 05-00-PLAN.md — Test Scaffolding (Wave 0) - DataManager and ThemeManager test scaffolding
+- [x] 05-01-PLAN.md — Export Functionality (Wave 1) - JSON export with file download for PERS-04
+- [x] 05-02-PLAN.md — Import Functionality (Wave 2) - JSON import with validation for PERS-05
+- [x] 05-03-PLAN.md — Dark Mode (Wave 3) - Theme toggle, persistence, and UI for UX-04
 
 ---
 
@@ -150,6 +174,7 @@ Plans:
 | 1. Foundation | 3/3 | Complete    | 2026-03-11 |
 | 2. Data Entry | 3/3 | Complete    | 2026-03-12 |
 | 3. Display & Edit | 2/2 | Complete | 2026-03-12 |
+| 3.1. Gap Closure | 0/2 | Planned | - |
 | 4. Distribution | 4/4 | Complete | 2026-03-12 |
 | 5. Data Management | 4/4 | Complete   | 2026-03-13 |
 
@@ -176,12 +201,12 @@ Plans:
 | PERS-01 | Phase 1 | Complete |
 | PERS-02 | Phase 1 | Complete |
 | PERS-03 | Phase 1 | Complete |
-| PERS-04 | Phase 5 | Planned |
-| PERS-05 | Phase 5 | Planned |
+| PERS-04 | Phase 5 | Complete |
+| PERS-05 | Phase 5 | Complete |
 | UX-01 | Phase 1 | Complete |
 | UX-02 | Phase 1 | Complete |
-| UX-03 | Phase 3 | Complete |
-| UX-04 | Phase 5 | Planned |
+| UX-03 | Phase 3.1 | Planned |
+| UX-04 | Phase 5 | Complete |
 
 **Coverage Summary:**
 - v1 requirements: 22 total
@@ -196,8 +221,9 @@ Plans:
 1. **Foundation first:** Data layer must exist before UI can function; integer money handling is a schema-level decision that affects all calculations
 2. **Entry before display:** Must be able to add data before viewing it; validation prevents corrupt data from entering system
 3. **Display before distribution:** Need aggregated totals before printing individual lists; edit/delete needed to correct mistakes before distribution
-4. **Management last:** Export/import and polish features are recovery/enhancement features, not core workflow
+4. **Gap closure:** Fix identified issues before considering phase complete
+5. **Management last:** Export/import and polish features are recovery/enhancement features, not core workflow
 
 ---
 
-*Last updated: 2026-03-12*
+*Last updated: 2026-03-13*
