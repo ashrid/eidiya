@@ -510,15 +510,17 @@ export class ContributorCard {
     this._editingBreakdown = null;
     this._editingAmountFils = null;
 
-    // Show success feedback BEFORE dispatching to store
-    this._showStatus('Saved', 'success');
-
-    // Dispatch to store
-    this._onUpdate(this._contributor.id, updates);
+    // Show success feedback
+    this._showStatus('Updated', 'success');
 
     // Exit edit mode and re-render
     this._exitEditMode();
     this._renderField('breakdown');
+
+    // Dispatch to store after delay
+    setTimeout(() => {
+      this._onUpdate(this._contributor.id, updates);
+    }, 500);
   }
 
   /**
@@ -597,16 +599,18 @@ export class ContributorCard {
     // Update local contributor data
     this._contributor = { ...this._contributor, ...updates };
 
-    // Show success feedback BEFORE dispatching to store
-    // (Store notification triggers re-render which destroys this card)
-    this._showStatus('Saved', 'success');
+    // Show success feedback
+    this._showStatus('Updated', 'success');
 
-    // Dispatch to store (triggers re-render, but status is already showing)
-    this._onUpdate(this._contributor.id, updates);
-
-    // Exit edit mode and re-render field
+    // Exit edit mode and re-render field immediately
     this._exitEditMode();
     this._renderField(field);
+
+    // Dispatch to store after a delay to allow badge to be seen
+    // The store update will trigger re-render, but user will have seen the feedback
+    setTimeout(() => {
+      this._onUpdate(this._contributor.id, updates);
+    }, 500);
   }
 
   /**

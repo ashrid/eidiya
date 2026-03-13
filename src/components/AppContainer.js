@@ -168,14 +168,16 @@ export class AppContainer {
    * @private
    */
   _handleDeleteConfirm(id) {
-    // Delete from store
-    this._store.deleteContributor(id);
-
-    // Show deleted status on the card (if it still exists briefly)
+    // Show deleted status on the card before deleting
     const card = this._contributorCards.get(id);
     if (card) {
       card._showStatus?.('Deleted', 'success');
     }
+
+    // Delete from store after delay to allow badge to be seen
+    setTimeout(() => {
+      this._store.deleteContributor(id);
+    }, 500);
   }
 
   /**
