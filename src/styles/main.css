@@ -1116,6 +1116,19 @@ fieldset.error legend {
   margin-bottom: 0;
 }
 
+/* Inline Edit Buttons (for name/amount edit modes) */
+.inline-edit-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.inline-edit-buttons button {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.875rem;
+  margin-bottom: 0;
+}
+
 /* ============================================
    Theme Toggle Styles
    ============================================ */
