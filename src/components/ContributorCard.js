@@ -248,22 +248,81 @@ export class ContributorCard {
 
     const currentValue = this._getFieldValue(field);
 
+    // Create container for edit mode
+    const editContainer = document.createElement('div');
+    editContainer.className = 'inline-edit-container';
+
     const input = document.createElement('input');
     input.type = this._getInputType(field);
     input.value = currentValue;
     input.className = 'inline-edit-input';
 
-    // Replace text with input
+    // Create buttons container
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.className = 'inline-edit-buttons';
+    buttonsContainer.style.marginTop = 'var(--spacing-xs)';
+    buttonsContainer.style.display = 'flex';
+    buttonsContainer.style.gap = 'var(--spacing-sm)';
+
+    const saveBtn = document.createElement('button');
+    saveBtn.type = 'button';
+    saveBtn.className = 'save-edit-btn';
+    saveBtn.textContent = 'Save';
+    saveBtn.style.fontSize = '0.875rem';
+    saveBtn.style.padding = 'var(--spacing-xs) var(--spacing-sm)';
+    saveBtn.style.marginBottom = '0';
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.className = 'cancel-edit-btn outline';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.style.fontSize = '0.875rem';
+    cancelBtn.style.padding = 'var(--spacing-xs) var(--spacing-sm)';
+    cancelBtn.style.marginBottom = '0';
+
+    // Button event handlers
+    saveBtn.addEventListener('click', () => {
+      this._saveEdit(field, input.value);
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      this._cancelEdit(field, currentValue);
+    });
+
+    // Prevent blur when clicking buttons (let buttons handle it)
+    buttonsContainer.addEventListener('mousedown', (e) => {
+      e.preventDefault(); // Prevent blur on input
+    });
+
+    buttonsContainer.appendChild(saveBtn);
+    buttonsContainer.appendChild(cancelBtn);
+
+    // Replace text with edit container
     fieldEl.innerHTML = '';
-    fieldEl.appendChild(input);
+    editContainer.appendChild(input);
+    editContainer.appendChild(buttonsContainer);
+    fieldEl.appendChild(editContainer);
     input.focus();
 
-    // Blur handler for auto-save
-    input.addEventListener('blur', () => this._saveEdit(field, input.value));
+    // Keep blur handler as fallback, but check if buttons were clicked
+    let isButtonClick = false;
+    saveBtn.addEventListener('mousedown', () => { isButtonClick = true; });
+    cancelBtn.addEventListener('mousedown', () => { isButtonClick = true; });
+
+    input.addEventListener('blur', () => {
+      // Small delay to let button click handler run first
+      setTimeout(() => {
+        if (!isButtonClick) {
+          this._saveEdit(field, input.value);
+        }
+        isButtonClick = false;
+      }, 150);
+    });
+
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
-        input.blur();
+        this._saveEdit(field, input.value);
       }
       if (e.key === 'Escape') {
         e.preventDefault();
