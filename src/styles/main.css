@@ -24,7 +24,7 @@
   --spacing-xl: calc(var(--pico-spacing) * 2);
 
   /* App-specific */
-  --app-max-width: 1200px;
+  --app-max-width: 1400px;
   --app-header-height: auto;
 }
 
@@ -638,7 +638,7 @@ fieldset.error legend {
 @media (min-width: 1024px) {
   .app-layout {
     display: grid;
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: 1fr 360px;
     gap: var(--spacing-xl);
     align-items: start;
   }
