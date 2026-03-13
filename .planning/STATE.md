@@ -61,11 +61,12 @@ progress:
 | Plan | Wave | Objective | Files | Requirements |
 |------|------|-----------|-------|--------------|
 | 03.1-01 | 1 | CSS Gap Fixes | main.css | UX-03 |
+| 03.1-02 | 1 | Component UI/UX Gap Closure | ContributorCard.js, AppContainer.js, main.css | UX-03 |
 
 ### Wave Structure
 
 ```
-Wave 1: 03.1-01 (CSS Gap Fixes)
+Wave 1: 03.1-01 (CSS Gap Fixes), 03.1-02 (Component UI/UX Gap Closure)
 ```
 
 ## Phase 5: Data Management - Planning Complete
@@ -128,6 +129,8 @@ Wave 3: 05-03 (Dark Mode)
 | ThemeManager singleton object | Simpler than class for global state | Decided |
 | Early theme script in HTML | Prevents flash of wrong theme | Decided |
 | ThemeToggle internal state tracking | Ensures consistency with toggle results | Decided |
+| Delayed store updates for status badges | Allows visual feedback before re-render destroys card | Decided |
+| Inline edit button blur handling | Mousedown prevention avoids blur/click race conditions | Decided |
 
 ### Critical Pitfalls to Avoid
 
@@ -191,4 +194,4 @@ Phase 5 adds data portability (export/import JSON) and dark mode support. Export
 
 ---
 
-*Last updated: 2026-03-12T23:41:00Z*
+*Last updated: 2026-03-13T06:00:00Z*
