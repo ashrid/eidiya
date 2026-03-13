@@ -224,11 +224,13 @@ header p {
   margin-bottom: 0;
   padding: 0.5rem 1.75rem 0.5rem 0.5rem; /* Balanced padding with extra right space for spinners */
   text-align: center;
-  font-size: 0.9375rem;
-  line-height: 1;
-  min-height: 2.5rem;
+  font-size: 1rem;
+  line-height: normal;
+  height: 2.75rem;
   box-sizing: border-box;
   width: 100%;
+  color: var(--pico-color);
+  background-color: var(--pico-form-element-background-color);
 }
 
 /* Error styling */

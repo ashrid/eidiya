@@ -282,7 +282,8 @@ export class ContributorForm {
     input.name = key;
     input.min = '0';
     input.step = '1';
-    input.value = this._values.breakdown[key] || 0;
+    input.placeholder = '0';
+    input.value = this._values.breakdown[key]?.toString() || '0';
     input.dataset.denomValue = denomValue;
     input.addEventListener('input', () => this._updateRemainingIndicator());
     group.appendChild(input);
