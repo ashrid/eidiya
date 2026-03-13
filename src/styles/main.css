@@ -332,18 +332,20 @@ fieldset.error legend {
 }
 
 .menu-button {
-  background: none;
+  background-color: transparent;
   border: none;
+  border-radius: var(--pico-border-radius);
   font-size: 1.5rem;
   cursor: pointer;
   padding: var(--spacing-xs);
   line-height: 1;
   color: var(--pico-muted-color);
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .menu-button:hover {
   color: var(--pico-color);
+  background-color: var(--pico-muted-border-color);
 }
 
 .action-menu {
