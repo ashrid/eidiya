@@ -1,9 +1,9 @@
 ---
-status: complete
+status: resolved
 phase: 03-display-edit
 source: ["03-01-SUMMARY.md", "03-02-SUMMARY.md"]
 started: 2026-03-13T09:50:00Z
-updated: 2026-03-13T10:15:00Z
+updated: 2026-03-13T10:30:00Z
 ---
 
 ## Current Test
@@ -59,20 +59,20 @@ skipped: 0
 ## Gaps
 
 - truth: "Denomination input spinners should not cover the value text"
-  status: failed
-  reason: "User reported: Number input spinners (arrows) are covering the text box, making values hard to see"
+  status: resolved
+  reason: "Fixed in Phase 3.1: Added padding-right: 1.5rem to denomination inputs"
   severity: minor
   test: visual-inspection
 
 - truth: "Add Contributor form should have adequate width for comfortable input"
-  status: failed
-  reason: "User reported: Right side Add Contributor panel is very compressed, needs more width"
+  status: resolved
+  reason: "Fixed in Phase 3.1: Increased max-width to 1400px and sidebar to 360px"
   severity: minor
   test: visual-inspection
 
 - truth: "Edit menu button should be visible in both light and dark modes"
-  status: failed
-  reason: "User reported: Edit menu button is bright white even in dark mode, button text not visible"
+  status: resolved
+  reason: "Fixed in Phase 3.1: Added explicit transparent background and theme-aware hover states"
   severity: major
   test: visual-inspection
 
@@ -83,19 +83,19 @@ skipped: 0
   test: 5
 
 - truth: "Edit mode should have explicit Save/Cancel buttons"
-  status: failed
-  reason: "User reported: Need a button to confirm and close edit mode"
+  status: resolved
+  reason: "Fixed in Phase 3.1: Added Save/Cancel buttons to name and amount edit modes with proper event handling"
   severity: major
   test: 4
 
 - truth: "Denomination breakdown edit mode should have Save/Cancel buttons"
-  status: failed
-  reason: "User reported: no save or cancel button in edit mode"
+  status: resolved
+  reason: "Fixed in Phase 3.1: Verified existing buttons work correctly"
   severity: major
   test: 5
 
 - truth: "Status badges should appear after edit/delete actions"
-  status: failed
-  reason: "User reported: no sign of saying edited or updated badge"
+  status: resolved
+  reason: "Fixed in Phase 3.1: Added 500ms delay before store updates to allow badge visibility before re-render"
   severity: major
   test: 8
