@@ -1,6 +1,23 @@
+# Dependencies
 node_modules/
+
+# Build output
 dist/
+
+# Environment files
 .env
 .env.local
+
+# Cloudflare
 .wrangler/
+
+# Logs
 *.log
+
+# Planning and documentation
+.planning/
+.claude/
+HOSTING-GUIDE.md
+
+# Misc
+pic.png
