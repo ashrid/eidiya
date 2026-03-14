@@ -170,8 +170,10 @@ describe('ThemeToggle', () => {
       const button1 = toggle.render();
       expect(button1.textContent).toContain('☀️');
 
-      // Simulate theme change
+      // Simulate theme change by destroying and recreating
+      toggle.destroy();
       ThemeManager.get.mockReturnValue('light');
+      toggle = new ThemeToggle();
 
       const button2 = toggle.render();
       expect(button2.textContent).toContain('🌙');

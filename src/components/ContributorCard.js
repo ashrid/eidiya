@@ -599,18 +599,15 @@ export class ContributorCard {
     // Update local contributor data
     this._contributor = { ...this._contributor, ...updates };
 
-    // Show success feedback
-    this._showStatus('Updated', 'success');
-
     // Exit edit mode and re-render field immediately
     this._exitEditMode();
     this._renderField(field);
 
-    // Dispatch to store after a delay to allow badge to be seen
-    // The store update will trigger re-render, but user will have seen the feedback
-    setTimeout(() => {
-      this._onUpdate(this._contributor.id, updates);
-    }, 500);
+    // Show success feedback after render to ensure container exists
+    this._showStatus('Updated', 'success');
+
+    // Dispatch to store immediately
+    this._onUpdate(this._contributor.id, updates);
   }
 
   /**
@@ -717,6 +714,7 @@ export class ContributorCard {
    * @private
    */
   _showFieldError(field, message) {
+    if (!this._element) return;
     const fieldEl = this._element.querySelector(`[data-field="${field}"]`);
     if (!fieldEl) return;
 
@@ -734,6 +732,7 @@ export class ContributorCard {
    * @private
    */
   _clearFieldError(field) {
+    if (!this._element) return;
     const fieldEl = this._element.querySelector(`[data-field="${field}"]`);
     if (!fieldEl) return;
 
@@ -747,6 +746,7 @@ export class ContributorCard {
    */
   _showStatus(message, type = 'success') {
     this._clearStatus();
+    if (!this._element) return;
 
     const container = this._element.querySelector('.status-container');
     if (!container) return;

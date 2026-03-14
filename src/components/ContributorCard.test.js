@@ -119,8 +119,8 @@ describe('ContributorCard', () => {
       input.value = 'Jane Doe';
       input.blur();
 
-      // Wait for async operations
-      await new Promise(resolve => setTimeout(resolve, 0));
+      // Wait for blur delay (150ms) + save
+      await new Promise(resolve => setTimeout(resolve, 200));
 
       expect(onUpdate).toHaveBeenCalledWith('test-id-123', { name: 'Jane Doe' });
     });
@@ -133,8 +133,8 @@ describe('ContributorCard', () => {
       input.value = ''; // Invalid - empty name
       input.blur();
 
-      // Wait for async operations
-      await new Promise(resolve => setTimeout(resolve, 0));
+      // Wait for blur delay (150ms) + error display
+      await new Promise(resolve => setTimeout(resolve, 200));
 
       expect(onUpdate).not.toHaveBeenCalled();
       const errorEl = document.querySelector('.inline-error');
@@ -151,8 +151,8 @@ describe('ContributorCard', () => {
       const event = new KeyboardEvent('keydown', { key: 'Enter' });
       input.dispatchEvent(event);
 
-      // Wait for async operations
-      await new Promise(resolve => setTimeout(resolve, 0));
+      // Wait for blur delay (150ms) + save
+      await new Promise(resolve => setTimeout(resolve, 200));
 
       expect(onUpdate).toHaveBeenCalledWith('test-id-123', { name: 'Jane Doe' });
     });
@@ -229,7 +229,7 @@ describe('ContributorCard', () => {
   });
 
   describe('status feedback', () => {
-    it('should show Saved badge after successful save', async () => {
+    it('should show Updated badge after successful save', async () => {
       const nameEl = document.querySelector('[data-field="name"]');
       nameEl.click();
 
@@ -237,16 +237,16 @@ describe('ContributorCard', () => {
       input.value = 'Jane Doe';
       input.blur();
 
-      // Wait for async save and status display
-      await new Promise(resolve => setTimeout(resolve, 10));
+      // Wait for blur delay (150ms) + status display
+      await new Promise(resolve => setTimeout(resolve, 200));
 
       const badge = document.querySelector('.status-badge');
       expect(badge).not.toBeNull();
-      expect(badge.textContent).toBe('Saved');
+      expect(badge.textContent).toBe('Updated');
     });
 
     it('should auto-remove status badge after 2 seconds', async () => {
-      vi.useFakeTimers();
+      vi.useFakeTimers({ shouldAdvanceTime: true });
 
       const nameEl = document.querySelector('[data-field="name"]');
       nameEl.click();
@@ -255,15 +255,15 @@ describe('ContributorCard', () => {
       input.value = 'Jane Doe';
       input.blur();
 
-      // Wait for async save and status display
-      await vi.advanceTimersByTimeAsync(10);
+      // Wait for blur delay (150ms) + status display
+      await vi.advanceTimersByTimeAsync(200);
 
       // Badge should exist
       let badge = document.querySelector('.status-badge');
       expect(badge).not.toBeNull();
 
-      // Advance time by 2 seconds
-      vi.advanceTimersByTime(2000);
+      // Advance time by 2 seconds for auto-remove
+      await vi.advanceTimersByTimeAsync(2000);
 
       // Badge should be removed
       badge = document.querySelector('.status-badge');
@@ -280,10 +280,11 @@ describe('ContributorCard', () => {
       input.value = 'Jane Doe';
       input.blur();
 
-      // Wait for async save and status display
-      await new Promise(resolve => setTimeout(resolve, 10));
+      // Wait for blur delay (150ms) + status display
+      await new Promise(resolve => setTimeout(resolve, 200));
 
       const badge = document.querySelector('.status-badge');
+      expect(badge).not.toBeNull();
       expect(badge.getAttribute('role')).toBe('status');
     });
   });
