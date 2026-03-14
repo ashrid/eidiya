@@ -195,17 +195,11 @@ header p {
   margin-bottom: var(--spacing-md);
 }
 
-/* Denomination grid - 2 columns mobile, 4 columns desktop */
+/* Denomination grid - 2 columns on all screen sizes to prevent overflow */
 .denomination-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
   gap: var(--pico-spacing);
-}
-
-@media (min-width: 768px) {
-  .denomination-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
 }
 
 .denomination-field {
@@ -222,7 +216,7 @@ header p {
 
 .denomination-field input {
   margin-bottom: 0;
-  padding: 0.5rem 1.75rem 0.5rem 0.5rem; /* Balanced padding with extra right space for spinners */
+  padding: 0.5rem 2rem 0.5rem 0.5rem; /* Extra right space for spinners */
   text-align: center;
   font-size: 1rem;
   line-height: normal;
@@ -231,6 +225,13 @@ header p {
   width: 100%;
   color: var(--pico-color);
   background-color: var(--pico-form-element-background-color);
+}
+
+/* Align spinner arrows to the right side of input */
+.denomination-field input::-webkit-inner-spin-button,
+.denomination-field input::-webkit-outer-spin-button {
+  opacity: 1;
+  margin-right: 0.25rem;
 }
 
 /* Error styling */
@@ -374,7 +375,8 @@ fieldset.error legend {
   display: none;
 }
 
-.menu-item {
+/* Higher specificity to override Pico button styles */
+.action-menu .menu-item {
   display: block;
   width: 100%;
   padding: var(--spacing-sm);
@@ -384,10 +386,22 @@ fieldset.error legend {
   cursor: pointer;
   border-radius: var(--pico-border-radius);
   transition: background-color 0.2s ease;
+  color: var(--pico-h1-color);
 }
 
-.menu-item:hover {
+.action-menu .menu-item:hover {
   background-color: var(--pico-muted-border-color);
+}
+
+/* Contrast/delete button in menu - red styling for destructive action */
+.action-menu .menu-item.contrast {
+  background: none;
+  color: var(--pico-color-red-500);
+}
+
+.action-menu .menu-item.contrast:hover {
+  background-color: var(--pico-color-red-100);
+  color: var(--pico-color-red-700);
 }
 
 /* Inline Edit Input */
