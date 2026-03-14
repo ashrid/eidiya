@@ -1,0 +1,10 @@
+name = "eidiya"
+compatibility_date = "2025-03-14"
+
+[build]
+command = "npm run build"
+output_dir = "dist"
+
+# Static site configuration (no Worker needed)
+[site]
+bucket = "dist"
